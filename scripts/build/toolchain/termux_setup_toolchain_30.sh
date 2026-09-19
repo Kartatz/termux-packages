@@ -1,3 +1,21 @@
+termux_patch_ndk_with_gcc_cross() {
+	local _gcc_cross_dir="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross"
+	if [ ! -x "${_gcc_cross_dir}/bin/ndk-patch" ]; then
+		local _gcc_cross_tar="${_gcc_cross_dir}.tar.xz"
+		termux_download \
+			"https://github.com/AmanoTeam/android-gcc-cross/releases/latest/download/x86_64-unknown-linux-gnu.tar.xz" \
+			"${_gcc_cross_tar}"
+		rm -Rf "${_gcc_cross_dir}"
+		tar -xJf "${_gcc_cross_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
+		rm -f "${_gcc_cross_tar}"
+	fi
+	# ndk-patch prefers ANDROID_HOME/ANDROID_SDK_ROOT over ANDROID_NDK,
+	# so blank them out to make it patch the overlay toolchain instead of
+	# the read-only lowerdir (NDK), which the overlay would not pick up.
+	ANDROID_HOME= ANDROID_SDK_ROOT= ANDROID_NDK_HOME= ANDROID_NDK_ROOT= NDK_HOME= \
+		ANDROID_NDK="${TERMUX_STANDALONE_TOOLCHAIN}" "${_gcc_cross_dir}/bin/ndk-patch"
+}
+
 termux_setup_toolchain_30() {
 	export CFLAGS=""
 	export CPPFLAGS=""
@@ -142,6 +160,7 @@ termux_setup_toolchain_30() {
 	fi
 
 	if [ -f "${TERMUX_STANDALONE_TOOLCHAIN}/.termux-standalone-toolchain" ]; then
+		termux_patch_ndk_with_gcc_cross
 		return
 	fi
 
@@ -235,4 +254,6 @@ termux_setup_toolchain_30() {
 	grep -lrw $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/include/c++/v1 -e 'include <version>' | xargs -n 1 sed -i 's/include <version>/include \"version\"/g'
 
 	touch ${TERMUX_STANDALONE_TOOLCHAIN}/.termux-standalone-toolchain
+
+	termux_patch_ndk_with_gcc_cross
 }

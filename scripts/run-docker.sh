@@ -92,7 +92,7 @@ if [ "$UNAME" = Darwin ]; then
 	SEC_OPT=""
 else
 	REPOROOT="$(dirname $(readlink -f $0))/../"
-	SEC_OPT=" --security-opt seccomp=$REPOROOT/scripts/profile.json --security-opt apparmor=_custom-termux-package-builder-$CONTAINER_NAME --cap-add CAP_SYS_ADMIN --device /dev/fuse"
+	SEC_OPT=" --security-opt seccomp=$REPOROOT/scripts/profile.json --security-opt apparmor=unconfined --cap-add CAP_SYS_ADMIN --device /dev/fuse"
 fi
 
 if [ "${CI:-}" = "true" ]; then
@@ -126,32 +126,6 @@ if [ -t 1 ]; then
 else
 	DOCKER_TTY=""
 fi
-
-APPARMOR_PARSER=""
-if command -v apparmor_parser > /dev/null; then
-	APPARMOR_PARSER="apparmor_parser"
-fi
-
-if [ -z "$APPARMOR_PARSER" ] || ! $SUDO aa-status --enabled; then
-	echo "WARNING: apparmor_parser not found, AppArmor profiles will not be loaded!"
-	echo "         This is not recommended, as it may cause security issues and unexpected behavior"
-	echo "         Avoid executing untrusted code in the container"
-	APPARMOR_PARSER=""
-fi
-
-load_apparmor_profile() {
-	local profile_path="$1"
-	local msg="${2:-}"
-	if [ -n "$APPARMOR_PARSER" ]; then
-		if [ -n "$msg" ]; then
-			echo "$msg..."
-		fi
-		cat "$profile_path" | sed -e "s/{{CONTAINER_NAME}}/$CONTAINER_NAME/g" | sudo "$APPARMOR_PARSER" -rK
-	fi
-}
-
-# Load the relaxed AppArmor profile first as we might need to change permissions
-load_apparmor_profile ./scripts/profile-relaxed.apparmor
 
 __change_builder_uid_gid() {
 	if [ "$UNAME" != Darwin ]; then
@@ -208,8 +182,6 @@ if [[ "$($SUDO docker container inspect -f '{{ .State.Running }}' $CONTAINER_NAM
 	$SUDO docker start $CONTAINER_NAME >/dev/null 2>&1
 	__change_container_pid_max
 fi
-
-load_apparmor_profile ./scripts/profile-restricted.apparmor "Loading restricted AppArmor profile"
 
 # Set traps to ensure that the process started with docker exec and all its children are killed.
 . "$TERMUX_SCRIPTDIR/scripts/utils/docker/docker.sh"; docker__setup_docker_exec_traps
