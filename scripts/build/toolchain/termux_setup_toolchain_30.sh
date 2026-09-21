@@ -189,6 +189,8 @@ termux_setup_toolchain_30() {
 			$TERMUX_STANDALONE_TOOLCHAIN/bin/$HOST_PLAT-gcc
 		cp $TERMUX_STANDALONE_TOOLCHAIN/bin/$HOST_PLAT-clang++ \
 			$TERMUX_STANDALONE_TOOLCHAIN/bin/$HOST_PLAT-g++
+		sed -i '1a\[ "$1" = "-dumpversion" ] \&\& set -- -dumpfullversion "$@"' \
+			$TERMUX_STANDALONE_TOOLCHAIN/bin/$HOST_PLAT-gcc
 	done
 
 	cp $TERMUX_STANDALONE_TOOLCHAIN/bin/armv7a-linux-androideabi$TERMUX_PKG_API_LEVEL-clang \
