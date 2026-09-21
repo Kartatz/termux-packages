@@ -365,8 +365,8 @@ lint_package() {
 		local pkg_lint_error
 
 		# Certain fields may be API-specific.
-		# Using API 24 here.
-		TERMUX_PKG_API_LEVEL=24
+		# Using API 30 here.
+		TERMUX_PKG_API_LEVEL=30
 
 		# shellcheck source=/dev/null
 		. "$package_script"
