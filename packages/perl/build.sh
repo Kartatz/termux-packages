@@ -76,6 +76,23 @@ termux_step_configure() {
 			-Doptimize="-O2" \
 			--with-libs="-lm -L$TERMUX_PREFIX/lib -landroid-utimes"
 	)
+
+	# The host miniperl build (perl-cross) compiles target sources with the
+	# host compiler (HOSTCC from xconfig.sh) and host glibc headers, but
+	# picks up the target config.h. Modern glibc does not provide union
+	# semun in <sys/sem.h>, so provide it for the host build.
+	cat > "$TERMUX_PKG_BUILDDIR/hostdefs.h" <<-'EOF'
+#include <sys/sem.h>
+#ifdef __GLIBC__
+union semun {
+	int val;
+	struct semid_ds *buf;
+	unsigned short *array;
+};
+#endif
+EOF
+	sed -i "s|^HOSTCFLAGS = |HOSTCFLAGS = -include $TERMUX_PKG_BUILDDIR/hostdefs.h |" \
+		"$TERMUX_PKG_BUILDDIR/Makefile.config"
 }
 
 termux_step_post_make_install() {
