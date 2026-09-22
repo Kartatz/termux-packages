@@ -92,6 +92,7 @@ termux_step_pre_configure() {
 	CPPFLAGS+=" -I$TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/include"
 	# Without this all symbols are removed from the built libpython3.so
 	LDFLAGS="${LDFLAGS/-Wl,--as-needed/}"
+	LDFLAGS="${LDFLAGS/-Wl,--no-as-needed,-landroid-support,--as-needed/-Wl,--no-as-needed,-landroid-support}"
 	LDFLAGS+=" -L$TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/lib"
 	if [ $TERMUX_ARCH = x86_64 ]; then LDFLAGS+=64; fi
 
