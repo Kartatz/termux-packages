@@ -68,7 +68,7 @@ termux_setup_toolchain_30() {
 		if [ $TERMUX_ARCH = arm ]; then
 			CCTERMUX_HOST_PLATFORM=armv7a-linux-androideabi$TERMUX_PKG_API_LEVEL
 		fi
-		LDFLAGS+=" -Wl,-rpath=$TERMUX__PREFIX__LIB_DIR"
+		LDFLAGS+=" -Wl,-rpath=$TERMUX__PREFIX__LIB_DIR -Wl,-rpath-link=$TERMUX__PREFIX__LIB_DIR"
 	else
 		export CC_FOR_BUILD=$CC
 		# Some build scripts use environment variable 'PKG_CONFIG', so
