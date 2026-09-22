@@ -21,6 +21,12 @@ termux_patch_ndk_with_gcc_cross() {
 		patch --silent -p1 -d "${_gcc_cross_dir}/include" < "${_gcc_cross_patch}"
 		touch "${_gcc_cross_dir}/.termux-patches-applied"
 	fi
+	rm -Rf "${_gcc_cross_dir}/include/zlib.h" "${_gcc_cross_dir}/include/zconf.h"
+	rm -Rf "${_gcc_cross_dir}"/lib/libz.a "${_gcc_cross_dir}"/lib/libz.so \
+		"${_gcc_cross_dir}"/lib/nouzen/libz.a "${_gcc_cross_dir}"/lib/nouzen/libz.so
+	rm -Rf "${_gcc_cross_dir}"/*/lib/libz.a "${_gcc_cross_dir}"/*/lib/libz.so \
+		"${_gcc_cross_dir}"/*/lib/static/libz.a "${_gcc_cross_dir}"/*/lib/static/libz.so \
+		"${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.a "${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.so
 	# ndk-patch prefers ANDROID_HOME/ANDROID_SDK_ROOT over ANDROID_NDK,
 	# so blank them out to make it patch the overlay toolchain instead of
 	# the read-only lowerdir (NDK), which the overlay would not pick up.
