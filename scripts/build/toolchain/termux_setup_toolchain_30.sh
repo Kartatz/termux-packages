@@ -35,6 +35,7 @@ termux_patch_ndk_with_gcc_cross() {
 }
 
 termux_setup_toolchain_30() {
+	export PINO_WERROR=false
 	export CFLAGS=""
 	export CPPFLAGS=""
 	export LDFLAGS="-L${TERMUX__PREFIX__LIB_DIR}"
