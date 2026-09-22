@@ -9,6 +9,18 @@ termux_patch_ndk_with_gcc_cross() {
 		tar -xJf "${_gcc_cross_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
 		rm -f "${_gcc_cross_tar}"
 	fi
+	# The Termux patches also need to be applied on the bionic headers
+	# bundled inside the GCC toolchain: the ndk-patches applied by
+	# termux_setup_toolchain_29 only affect the NDK sysroot used by Clang,
+	# while the GCC drivers compile against the toolchain's own copy of them.
+	if [ ! -f "${_gcc_cross_dir}/.termux-patches-applied" ]; then
+		local _gcc_cross_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
+		termux_download \
+			"https://raw.githubusercontent.com/AmanoTeam/android-gcc-cross/refs/heads/master/patches/0001-Termux-patches.patch" \
+			"${_gcc_cross_patch}"
+		patch --silent -p1 -d "${_gcc_cross_dir}/include" < "${_gcc_cross_patch}"
+		touch "${_gcc_cross_dir}/.termux-patches-applied"
+	fi
 	# ndk-patch prefers ANDROID_HOME/ANDROID_SDK_ROOT over ANDROID_NDK,
 	# so blank them out to make it patch the overlay toolchain instead of
 	# the read-only lowerdir (NDK), which the overlay would not pick up.
