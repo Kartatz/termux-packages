@@ -27,6 +27,18 @@ termux_patch_ndk_with_gcc_cross() {
 	rm -Rf "${_gcc_cross_dir}"/*/lib/libz.a "${_gcc_cross_dir}"/*/lib/libz.so \
 		"${_gcc_cross_dir}"/*/lib/static/libz.a "${_gcc_cross_dir}"/*/lib/static/libz.so \
 		"${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.a "${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.so
+	# Remove headers that are provided by Termux packages instead of the
+	# ones bundled in the GCC toolchain, mirroring the removals applied to
+	# the NDK sysroot below. The GCC drivers (and Clang, through the
+	# ndk-patched wrappers) compile against the toolchain's own copy of
+	# the bionic headers, so those removals are needed here as well.
+	# The whole `unicode` directory is removed since it is a superset of
+	# the unicode headers removed from the NDK sysroot.
+	rm -Rf "${_gcc_cross_dir}"/include/unicode \
+		"${_gcc_cross_dir}"/include/{EGL,GLES{,2,3},vulkan} \
+		"${_gcc_cross_dir}"/include/{glob,iconv,spawn,execinfo}.h \
+		"${_gcc_cross_dir}"/include/KHR/khrplatform.h \
+		"${_gcc_cross_dir}"/include/sys/{capability,shm,sem}.h
 	# ndk-patch prefers ANDROID_HOME/ANDROID_SDK_ROOT over ANDROID_NDK,
 	# so blank them out to make it patch the overlay toolchain instead of
 	# the read-only lowerdir (NDK), which the overlay would not pick up.
