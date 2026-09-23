@@ -1,0 +1,14 @@
+# The gcc-cross toolchain's <limits.h> only exposes ULLONG_MAX for C99
+# (__STDC_VERSION__ >= 199901L), not for C++. <climits> provides it in all
+# standards, matching what the NDK clang builtin limits.h does.
+
+--- a/src/dstring.cpp
++++ b/src/dstring.cpp
+@@ -15,6 +15,7 @@
+ 
+ #include "dstring.h"
+ 
++#include <climits>
+ #include <limits.h>
+ #include <stdlib.h>
+ #include <stdio.h>
