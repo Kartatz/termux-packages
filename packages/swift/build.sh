@@ -9,7 +9,7 @@ TERMUX_PKG_SRCURL=https://github.com/swiftlang/swift/archive/refs/tags/swift-$TE
 TERMUX_PKG_SHA256=a96425b6626ede8518423810450763da541fb28501e27009badb6a6f6534c411
 TERMUX_PKG_AUTO_UPDATE=false
 TERMUX_PKG_HOSTBUILD=true
-TERMUX_PKG_DEPENDS="clang, libandroid-execinfo, libandroid-glob, libandroid-posix-semaphore, libandroid-shmem, libandroid-spawn, libandroid-spawn-static, libandroid-sysv-semaphore, libcurl, libuuid, libxml2, libdispatch, llbuild, pkg-config, swift-sdk-${TERMUX_ARCH/_/-}"
+TERMUX_PKG_DEPENDS="clang, libandroid-glob, libandroid-posix-semaphore, libandroid-shmem, libandroid-spawn, libandroid-spawn-static, libandroid-sysv-semaphore, libcurl, libuuid, libxml2, libdispatch, llbuild, pkg-config, swift-sdk-${TERMUX_ARCH/_/-}"
 TERMUX_PKG_BUILD_DEPENDS="rsync"
 TERMUX_PKG_EXCLUDED_ARCHES="i686"
 TERMUX_PKG_NO_STATICSPLIT=true
@@ -155,7 +155,7 @@ termux_step_make() {
 		# hack to get the Ubuntu 24.04 toolchain running on 26.04, until we can update
 		patchelf --replace-needed libxml2.so.2 libxml2.so $SWIFT_BINDIR/../lib/swift/linux/libFoundationXML.so
 		ln -sf $TERMUX_PKG_HOSTBUILD_DIR/llvm-linux-x86_64 $TERMUX_PKG_BUILDDIR/llvm-linux-x86_64
-		for header in execinfo.h glob.h iconv.h spawn.h sys/sem.h sys/shm.h; do
+		for header in glob.h iconv.h spawn.h sys/sem.h sys/shm.h; do
 			ln -sf $TERMUX_PREFIX/include/$header $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/include/$header
 		done
 		unset ANDROID_NDK_ROOT
@@ -178,7 +178,7 @@ termux_step_make() {
 	--install-xctest --install-llbuild --install-swift-testing --install-swiftpm \
 	--install-swift-driver --install-sourcekit-lsp
 
-	rm $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/include/{execinfo.h,glob.h,iconv.h,spawn.h,sys/sem.h,sys/shm.h}
+	rm $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/include/{glob.h,iconv.h,spawn.h,sys/sem.h,sys/shm.h}
 	rm $TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/lib/swift
 }
 

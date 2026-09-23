@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="1:8.10.2"
 TERMUX_PKG_SRCURL="https://download.redis.io/releases/redis-${TERMUX_PKG_VERSION:2}.tar.gz"
 TERMUX_PKG_SHA256=b9ffee226b5eecdba98a679260dad764b2a4ebd90dce4ad5ac9e9f3eef9c02b3
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libandroid-glob"
+TERMUX_PKG_DEPENDS="libandroid-glob"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_CONFFILES="etc/redis.conf"
 TERMUX_PKG_BREAKS="valkey"
@@ -16,9 +16,8 @@ termux_step_pre_configure() {
 	export PREFIX="$TERMUX_PREFIX"
 	export USE_JEMALLOC=no
 
-	CPPFLAGS+=" -DHAVE_BACKTRACE"
 	CFLAGS+=" $CPPFLAGS"
-	LDFLAGS+=" -landroid-execinfo -landroid-glob"
+	LDFLAGS+=" -landroid-glob"
 }
 
 termux_step_make() {

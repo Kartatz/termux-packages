@@ -1,8 +1,8 @@
 TERMUX_SUBPKG_DESCRIPTION="PostgreSQL client library (libpq) without the server"
 TERMUX_SUBPKG_INCLUDE="lib/libpq.so*"
 # libpq is only linked against openssl (built --with-openssl); the other
-# postgresql deps (libicu, libxml2, libuuid, readline, libandroid-shmem,
-# libandroid-execinfo) are needed by the backend/contribs, not by the client
+# postgresql deps (libicu, libxml2, libuuid, readline, libandroid-shmem)
+# are needed by the backend/contribs, not by the client
 # library, so they must not leak into this lightweight subpackage.
 TERMUX_SUBPKG_DEPENDS="openssl"
 # Without this, the default behaviour would make libpq depend on the full

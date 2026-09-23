@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="20.0.2"
 TERMUX_PKG_SRCURL="https://download.qt.io/official_releases/qtcreator/${TERMUX_PKG_VERSION%.*}/${TERMUX_PKG_VERSION}/qt-creator-opensource-src-${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=b52a5cfc1b4b5777ed7a29dc956ca44915ce40371a3d6ac54c78be0e1eef9bc5
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="clang, glib, libandroid-execinfo, libarchive, libelf, libllvm, libsecret, opengl, python, qt6-qtbase, qt6-qtcharts, qt6-qtdeclarative, qt6-qttools, qt6-qtsvg, libyaml-cpp, zstd"
+TERMUX_PKG_DEPENDS="clang, glib, libarchive, libelf, libllvm, libsecret, opengl, python, qt6-qtbase, qt6-qtcharts, qt6-qtdeclarative, qt6-qttools, qt6-qtsvg, libyaml-cpp, zstd"
 TERMUX_PKG_BUILD_DEPENDS="libllvm-static, qt6-qtbase-cross-tools, qt6-qtcharts-cross-tools, qt6-qtdeclarative-cross-tools, qt6-qttools-cross-tools, qt6-qtsvg-cross-tools"
 TERMUX_PKG_RECOMMENDS="gdb, git, make, cmake, mlocate"
 TERMUX_PKG_BUILD_IN_SRC=true
@@ -21,7 +21,6 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 termux_step_pre_configure() {
 	termux_setup_golang
 
-	LDFLAGS+=" -landroid-execinfo"
 
 	# add the directories of all .so files found in the package
 	# to the library run paths of all executables in the package

@@ -7,7 +7,7 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_METHOD=repology # Upstream only releases major versions theough GitHub. Other minor updates are released using git tags, better rely on repology for updated versiom
 TERMUX_PKG_SRCURL=https://github.com/danmar/cppcheck/archive/refs/tags/$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=d74945deb2d50393430e07596b766f8a779512c7f60dac2a30ea64e059ece57b
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libc++"
+TERMUX_PKG_DEPENDS="libc++"
 
 # Prevent running dmake during builds. dmake just generates Makefile which we
 # aren't using, and QT translation files, but as we are not building the GUI,
@@ -15,6 +15,3 @@ TERMUX_PKG_DEPENDS="libandroid-execinfo, libc++"
 # target binaries on host
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DUSE_MATCHCOMPILER=On -DDISABLE_DMAKE=ON"
 
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-execinfo"
-}

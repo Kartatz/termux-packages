@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="9.1.2"
 TERMUX_PKG_SRCURL="https://github.com/valkey-io/valkey/archive/refs/tags/${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=19c23908e7d57e8d91ef85b41f5646307582f10f4f0fb999bbf89ed24ec9c983
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libandroid-glob"
+TERMUX_PKG_DEPENDS="libandroid-glob"
 TERMUX_PKG_CONFFILES="etc/valkey.conf"
 TERMUX_PKG_BREAKS="redis"
 TERMUX_PKG_CONFLICTS="redis"
@@ -17,9 +17,8 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 "
 
 termux_step_pre_configure() {
-	CPPFLAGS+=" -DHAVE_BACKTRACE"
 	CFLAGS+=" $CPPFLAGS"
-	LDFLAGS+=" -landroid-execinfo -landroid-glob"
+	LDFLAGS+=" -landroid-glob"
 
 	( cd "$TERMUX_PKG_SRCDIR/src" && ./mkreleasehdr.sh )
 }

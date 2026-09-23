@@ -11,7 +11,7 @@ TERMUX_PKG_VERSION="4.0.6"
 TERMUX_PKG_SRCURL="https://cache.ruby-lang.org/pub/ruby/${TERMUX_PKG_VERSION%.*}/ruby-$TERMUX_PKG_VERSION.tar.xz"
 TERMUX_PKG_SHA256=9c9d121fe3314ea7c801e690b9de981d2b9d12d7849db99c27482468a541ba0a
 # libbffi is used by the fiddle extension module:
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libandroid-support, libffi, libgmp, readline, openssl, libyaml, zlib"
+TERMUX_PKG_DEPENDS="libandroid-support, libffi, libgmp, readline, openssl, libyaml, zlib"
 TERMUX_PKG_RECOMMENDS="make, pkg-config, resolv-conf"
 TERMUX_PKG_BREAKS="ruby-dev"
 TERMUX_PKG_REPLACES="ruby-dev"

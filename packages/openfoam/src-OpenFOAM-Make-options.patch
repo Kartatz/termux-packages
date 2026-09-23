@@ -6,4 +6,4 @@ diff -u -r ../openfoam-OpenFOAM-v2312/src/OpenFOAM/Make/options ./src/OpenFOAM/M
      LIB_LIBS += -L$(FOAM_LIBBIN)/dummy -lPstream
  endif
 +
-+LIB_LIBS += -L@TERMUX_PREFIX@/lib -landroid-execinfo
++LIB_LIBS += -L@TERMUX_PREFIX@/lib

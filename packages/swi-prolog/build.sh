@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="10.1.15"
 TERMUX_PKG_SRCURL=https://www.swi-prolog.org/download/devel/src/swipl-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=3ac0d616476c848f81f7bf2d8f046b09b464dc6416ed7f247f23540106761128
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libarchive, libcrypt, libdb, libedit, libgmp, libyaml, ncurses, openssl, ossp-uuid, pcre2, python, unixodbc, zlib"
+TERMUX_PKG_DEPENDS="libarchive, libcrypt, libdb, libedit, libgmp, libyaml, ncurses, openssl, ossp-uuid, pcre2, python, unixodbc, zlib"
 TERMUX_PKG_FORCE_CMAKE=true
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_AUTO_UPDATE=true
@@ -196,7 +196,7 @@ termux_step_host_build() {
 termux_step_pre_configure() {
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" $_SHARED_EXTRA_CONFIGURE_ARGS"
 
-	LDFLAGS+=" -landroid-execinfo $($CC -print-libgcc-file-name)"
+	LDFLAGS+=" $($CC -print-libgcc-file-name)"
 
 	_load_ubuntu_packages
 }

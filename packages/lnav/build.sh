@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="0.14.1"
 TERMUX_PKG_SRCURL=https://github.com/tstack/lnav/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=9eddf42dbbbd59af423cd25f49e744969c95a3901f9aba07e48481d4c41c4c4e
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libandroid-glob, libandroid-spawn, libandroid-utimes, libarchive, libbz2, libc++, libcurl, libsqlite, libunistring, pcre2, readline, zlib"
+TERMUX_PKG_DEPENDS="libandroid-glob, libandroid-spawn, libandroid-utimes, libarchive, libbz2, libc++, libcurl, libsqlite, libunistring, pcre2, readline, zlib"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --disable-system-paths
 --disable-static

@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="3.2.91"
 TERMUX_PKG_REVISION=17
 TERMUX_PKG_SRCURL="ftp://alpha.gnu.org/gnu/smalltalk/smalltalk-$TERMUX_PKG_VERSION.tar.gz"
 TERMUX_PKG_SHA256=13a7480553c182dbb8092bd4f215781b9ec871758d1db7045c2d8587e4d1bef9
-TERMUX_PKG_DEPENDS="gdbm, glib, libandroid-execinfo, libandroid-support, libexpat, libffi, libgmp, libiconv, libltdl, libsigsegv, libsqlite, readline, zlib"
+TERMUX_PKG_DEPENDS="gdbm, glib, libandroid-support, libexpat, libffi, libgmp, libiconv, libltdl, libsigsegv, libsqlite, readline, zlib"
 TERMUX_PKG_BREAKS="smalltalk-dev"
 TERMUX_PKG_REPLACES="smalltalk-dev"
 # in some older packages, --with-readline=$TERMUX_PREFIX is used.
@@ -48,7 +48,6 @@ termux_step_pre_configure() {
 	# but will default to C23 (gnu23) if not forced to a lower C specification level.
 	export CFLAGS+=" -std=gnu99"
 
-	export LDFLAGS+=" -landroid-execinfo"
 
 	if [[ "$TERMUX_ON_DEVICE_BUILD" == "false" ]]; then
 		export LD_LIBRARY_PATH="$TERMUX_PKG_HOSTBUILD_DIR/libgst/.libs"

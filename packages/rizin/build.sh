@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="0.9.1"
 TERMUX_PKG_REVISION=2
 # Use source tarball from release assets to get all bundled projects
 TERMUX_PKG_SRCURL="https://github.com/rizinorg/rizin/releases/download/v${TERMUX_PKG_VERSION}/rizin-src-v${TERMUX_PKG_VERSION}.tar.xz"
-TERMUX_PKG_DEPENDS="capstone, libandroid-execinfo, liblz4, liblzma, libmagic, libzip, openssl, tree-sitter, xxhash, zlib, zstd"
+TERMUX_PKG_DEPENDS="capstone, liblz4, liblzma, libmagic, libzip, openssl, tree-sitter, xxhash, zlib, zstd"
 TERMUX_PKG_SUGGESTS="python, apk-tools, apktool, apksigner"
 TERMUX_PKG_SHA256=7ac1cd7daca7afdda742e15478b1f747fc1f813e496fee71839d1e109e543dca
 TERMUX_PKG_AUTO_UPDATE=true
@@ -31,5 +31,5 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 
 termux_step_pre_configure() {
 	# for backtrace and backtrace_symbols_fd
-	LDFLAGS+=" -lm -landroid-execinfo"
+	LDFLAGS+=" -lm"
 }

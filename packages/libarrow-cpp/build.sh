@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="25.0.1"
 TERMUX_PKG_SRCURL="https://github.com/apache/arrow/archive/refs/tags/apache-arrow-${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=01ee19d023775e70692cf52e0efa2b8cc7b9b7257d17983b5f6c36a06288ce02
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="abseil-cpp, apache-orc, libandroid-execinfo, libc++, liblz4, libprotobuf, libre2, libsnappy, thrift, utf8proc, zlib, zstd"
+TERMUX_PKG_DEPENDS="abseil-cpp, apache-orc, libc++, liblz4, libprotobuf, libre2, libsnappy, thrift, utf8proc, zlib, zstd"
 TERMUX_PKG_BUILD_DEPENDS="boost, boost-headers, rapidjson"
 TERMUX_PKG_PYTHON_COMMON_BUILD_DEPS="build, 'Cython>=3.1', libcst, numpy, scikit-build-core, setuptools-scm, wheel"
 TERMUX_PKG_BREAKS="libarrow-python (<< ${TERMUX_PKG_VERSION})"
@@ -45,7 +45,6 @@ termux_step_pre_configure() {
 	TERMUX_PKG_SRCDIR+="/cpp"
 
 	CPPFLAGS+=" -DPROTOBUF_USE_DLLS"
-	LDFLAGS+=" -landroid-execinfo"
 
 	# Fix linker script error for zlib 1.3
 	LDFLAGS+=" -Wl,--undefined-version"

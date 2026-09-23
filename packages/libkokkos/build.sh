@@ -7,13 +7,10 @@ TERMUX_PKG_VERSION="5.2.2"
 TERMUX_PKG_SRCURL=https://github.com/kokkos/kokkos/archive/refs/tags/${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=491fe02cb127559dd3c996f6693686f1eab00a53fd5c184e18e663896884175e
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-execinfo, libc++"
+TERMUX_PKG_DEPENDS="libc++"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DBUILD_SHARED_LIBS=ON
 -DKokkos_ENABLE_LIBDL=OFF
 "
 TERMUX_PKG_EXCLUDED_ARCHES="arm, i686"
 
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-execinfo"
-}

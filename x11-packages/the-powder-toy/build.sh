@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="100.1.400"
 TERMUX_PKG_SRCURL="https://github.com/ThePowderToy/The-Powder-Toy/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=75cd971e1b2d6789f9e35b75926b76d037a564ad9291fa852ad9996c8ac40c96
-TERMUX_PKG_DEPENDS="fftw, jsoncpp, libandroid-execinfo, libbz2, libc++, libcurl, luajit, libpng, sdl2 | sdl2-compat"
+TERMUX_PKG_DEPENDS="fftw, jsoncpp, libbz2, libc++, libcurl, luajit, libpng, sdl2 | sdl2-compat"
 TERMUX_PKG_ANTI_BUILD_DEPENDS="sdl2-compat"
 TERMUX_PKG_GROUPS="games"
 TERMUX_PKG_AUTO_UPDATE=true
@@ -18,9 +18,6 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -Dcan_install=no
 "
 
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-execinfo"
-}
 
 termux_step_make_install() {
 	install -Dm700 -t "$TERMUX_PREFIX/bin" powder

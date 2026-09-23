@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="4.7.2"
 TERMUX_PKG_SRCURL="https://github.com/godotengine/godot/archive/refs/tags/$TERMUX_PKG_VERSION-stable.tar.gz"
 TERMUX_PKG_SHA256=e954996374cbd1cb5d72e0e3781cc537408e6ce73b010b12c6c2f308a820690a
-TERMUX_PKG_DEPENDS="brotli, ca-certificates, fontconfig, freetype, glu, libandroid-execinfo, libc++, libenet, libgraphite, libjpeg-turbo, libogg, libtheora, libvorbis, libvpx, libwebp, libwslay, libxcursor, libxi, libxinerama, libxkbcommon, libxrandr, mbedtls, miniupnpc, opengl, opusfile, pcre2, python, sdl3, speechd, zlib, zstd"
+TERMUX_PKG_DEPENDS="brotli, ca-certificates, fontconfig, freetype, glu, libc++, libenet, libgraphite, libjpeg-turbo, libogg, libtheora, libvorbis, libvpx, libwebp, libwslay, libxcursor, libxi, libxinerama, libxkbcommon, libxrandr, mbedtls, miniupnpc, opengl, opusfile, pcre2, python, sdl3, speechd, zlib, zstd"
 TERMUX_PKG_BUILD_DEPENDS="pulseaudio, yasm"
 TERMUX_PKG_PYTHON_COMMON_BUILD_DEPS="scons"
 TERMUX_PKG_AUTO_UPDATE=true
@@ -65,7 +65,7 @@ termux_step_make() {
 		colored=yes \
 		platform=linuxbsd \
 		alsa=no \
-		execinfo=yes \
+		execinfo=no \
 		pulseaudio=yes \
 		udev=no \
 		module_camera_enabled=no \
@@ -79,7 +79,7 @@ termux_step_make() {
 		STRIP="$(command -v $STRIP)" \
 		cflags="$CPPFLAGS $CFLAGS" \
 		cxxflags="$CPPFLAGS $CXXFLAGS" \
-		linkflags="$LDFLAGS -landroid-execinfo -lturbojpeg" \
+		linkflags="$LDFLAGS -lturbojpeg" \
 		CPPPATH="$TERMUX_PREFIX/include" \
 		LIBPATH="$TERMUX_PREFIX/lib" \
 		$system_libs \

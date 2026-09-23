@@ -7,8 +7,8 @@ TERMUX_PKG_SRCURL="https://github.com/namhyung/uftrace/archive/refs/tags/v${TERM
 TERMUX_PKG_SHA256=03189061130693b274a4d0af47c4a3135d4a496ca111b78233593bfcb3d3720f
 # Hardcoded libpython${TERMUX_PYTHON_VERSION}.so is dlopen(3)ed by uftrace.
 # Please revbump and rebuild when bumping TERMUX_PYTHON_VERSION.
-# libandroid-{execinfo,spawn} are dlopen(3)ed.
-TERMUX_PKG_DEPENDS="capstone, libandroid-execinfo, libandroid-glob, libandroid-spawn, libc++, libdw, libelf, luajit, ncurses, python"
+# libandroid-spawn is dlopen(3)ed when built below API level 28.
+TERMUX_PKG_DEPENDS="capstone, libandroid-glob, libandroid-spawn, libc++, libdw, libelf, luajit, ncurses, python"
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 # See https://github.com/termux/termux-packages/pull/21712 about arm build failure:

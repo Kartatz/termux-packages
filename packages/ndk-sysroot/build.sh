@@ -20,7 +20,6 @@ include/GLES
 include/GLES2
 include/GLES3
 include/KHR/khrplatform.h
-include/execinfo.h
 include/glob.h
 include/iconv.h
 include/spawn.h

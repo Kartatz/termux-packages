@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION="1.98.1"
 TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL="https://static.rust-lang.org/dist/rustc-${TERMUX_PKG_VERSION}-src.tar.xz"
 TERMUX_PKG_SHA256=be1816e7f6c40abb90245ad6e024bed2a7e88d7dda4561e4d5470207df616b9f
-TERMUX_PKG_DEPENDS="clang, libandroid-execinfo, libc++, libllvm (<< $TERMUX_LLVM_NEXT_MAJOR_VERSION), lld, openssl, zlib"
+TERMUX_PKG_DEPENDS="clang, libc++, libllvm (<< $TERMUX_LLVM_NEXT_MAJOR_VERSION), lld, openssl, zlib"
 TERMUX_PKG_BUILD_DEPENDS="wasi-libc"
 TERMUX_PKG_SUGGESTS="rust-analyzer"
 TERMUX_PKG_NO_REPLACE_GUESS_SCRIPTS=true
@@ -133,8 +133,6 @@ termux_step_pre_configure() {
 	#		$TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/lib/$TERMUX_HOST_PLATFORM/$TERMUX_PKG_API_LEVEL/lib{c,dl}.so
 	# but written in a future-proof manner.
 	ln -vfst $RUST_LIBDIR $(echo | $CC -x c - -Wl,-t -shared | grep '\.so$')
-
-	ln -vfst "${RUST_LIBDIR}" "${TERMUX_PREFIX}"/lib/libandroid-execinfo.so
 }
 
 termux_step_configure() {
@@ -208,10 +206,6 @@ termux_step_configure() {
 	"${CC}" ${CPPFLAGS} -c "${TERMUX_PKG_BUILDER_DIR}/syncfs.c"
 	"${AR}" rcu "${RUST_LIBDIR}/libsyncfs.a" syncfs.o
 	export CARGO_TARGET_${env_host}_RUSTFLAGS+=" -C link-arg=-l:libsyncfs.a"
-
-	# rust 1.87.0
-	# note: ld.lld: error: undefined reference due to --no-allow-shlib-undefined: backtrace
-	export CARGO_TARGET_${env_host}_RUSTFLAGS+=" -C link-arg=-landroid-execinfo"
 
 	export CARGO_TARGET_${env_host}_RUSTFLAGS+=" -C link-arg=-Wl,-rpath=${TERMUX_PREFIX}/lib -C link-arg=-Wl,--enable-new-dtags"
 
