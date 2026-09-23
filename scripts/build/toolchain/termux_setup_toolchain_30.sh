@@ -1,25 +1,45 @@
 termux_patch_ndk_with_gcc_cross() {
 	local _gcc_cross_dir="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross"
-	if [ ! -x "${_gcc_cross_dir}/bin/ndk-patch" ]; then
+	local _gcc_cross_stamp="${_gcc_cross_dir}/.termux-patches-applied-v3"
+	if [ ! -x "${_gcc_cross_dir}/bin/ndk-patch" ] || [ ! -f "${_gcc_cross_stamp}" ]; then
 		local _gcc_cross_tar="${_gcc_cross_dir}.tar.xz"
+		local _gcc_cross_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
 		termux_download \
 			"https://github.com/AmanoTeam/android-gcc-cross/releases/latest/download/x86_64-unknown-linux-gnu.tar.xz" \
 			"${_gcc_cross_tar}"
-		rm -Rf "${_gcc_cross_dir}"
-		tar -xJf "${_gcc_cross_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
-		rm -f "${_gcc_cross_tar}"
-	fi
-	# The Termux patches also need to be applied on the bionic headers
-	# bundled inside the GCC toolchain: the ndk-patches applied by
-	# termux_setup_toolchain_29 only affect the NDK sysroot used by Clang,
-	# while the GCC drivers compile against the toolchain's own copy of them.
-	if [ ! -f "${_gcc_cross_dir}/.termux-patches-applied" ]; then
-		local _gcc_cross_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
 		termux_download \
 			"https://raw.githubusercontent.com/AmanoTeam/android-gcc-cross/refs/heads/master/patches/0001-Termux-patches.patch" \
 			"${_gcc_cross_patch}"
+		rm -Rf "${_gcc_cross_dir}"
+		tar -xJf "${_gcc_cross_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
+		rm -f "${_gcc_cross_tar}"
+		# The Termux patches also need to be applied on the bionic headers
+		# bundled inside the GCC toolchain: the ndk-patches applied by
+		# termux_setup_toolchain_30 only affect the NDK sysroot used by Clang,
+		# while the GCC drivers compile against the toolchain's own copy of them.
 		patch --silent -p1 -d "${_gcc_cross_dir}/include" < "${_gcc_cross_patch}"
-		touch "${_gcc_cross_dir}/.termux-patches-applied"
+		# Remove headers that are provided by Termux packages instead of
+		# the ones bundled in the GCC toolchain, mirroring the removals
+		# applied to the NDK sysroot below. The GCC drivers (and Clang,
+		# through the ndk-patched wrappers) compile against the toolchain's
+		# own copy of the bionic headers, so those removals are needed
+		# here as well. The whole `unicode` directory is removed since it
+		# is a superset of the unicode headers removed from the NDK
+		# sysroot. <execinfo.h> is removed too since the backtrace(3)
+		# functions it declares are only provided by bionic from API level
+		# 33, so packages must not detect them at the default level.
+		# <glob.h>, <iconv.h>, <spawn.h>, <sys/capability.h>, <sys/sem.h>
+		# and <sys/shm.h> are kept: the functions they declare are provided
+		# by bionic itself at the default API level (>= 24), so removing
+		# them would break packages whose configure scripts detect those
+		# functions (e.g. libx11, binutils), and the versions provided by
+		# the Termux packages shadowing them, when they are dependencies,
+		# take precedence through the prefix include dir anyway.
+		rm -Rf "${_gcc_cross_dir}"/include/unicode \
+			"${_gcc_cross_dir}"/include/{EGL,GLES{,2,3},vulkan} \
+			"${_gcc_cross_dir}"/include/execinfo.h \
+			"${_gcc_cross_dir}"/include/KHR/khrplatform.h
+		touch "${_gcc_cross_stamp}"
 	fi
 	rm -Rf "${_gcc_cross_dir}/include/zlib.h" "${_gcc_cross_dir}/include/zconf.h"
 	rm -Rf "${_gcc_cross_dir}"/lib/libz.a "${_gcc_cross_dir}"/lib/libz.so \
@@ -27,18 +47,6 @@ termux_patch_ndk_with_gcc_cross() {
 	rm -Rf "${_gcc_cross_dir}"/*/lib/libz.a "${_gcc_cross_dir}"/*/lib/libz.so \
 		"${_gcc_cross_dir}"/*/lib/static/libz.a "${_gcc_cross_dir}"/*/lib/static/libz.so \
 		"${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.a "${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.so
-	# Remove headers that are provided by Termux packages instead of the
-	# ones bundled in the GCC toolchain, mirroring the removals applied to
-	# the NDK sysroot below. The GCC drivers (and Clang, through the
-	# ndk-patched wrappers) compile against the toolchain's own copy of
-	# the bionic headers, so those removals are needed here as well.
-	# The whole `unicode` directory is removed since it is a superset of
-	# the unicode headers removed from the NDK sysroot.
-	rm -Rf "${_gcc_cross_dir}"/include/unicode \
-		"${_gcc_cross_dir}"/include/{EGL,GLES{,2,3},vulkan} \
-		"${_gcc_cross_dir}"/include/{glob,iconv,spawn,execinfo}.h \
-		"${_gcc_cross_dir}"/include/KHR/khrplatform.h \
-		"${_gcc_cross_dir}"/include/sys/{capability,shm,sem}.h
 	# ndk-patch prefers ANDROID_HOME/ANDROID_SDK_ROOT over ANDROID_NDK,
 	# so blank them out to make it patch the overlay toolchain instead of
 	# the read-only lowerdir (NDK), which the overlay would not pick up.
@@ -271,7 +279,9 @@ termux_setup_toolchain_30() {
 	# Remove unicode headers provided by libicu.
 	# Remove KHR/khrplatform.h provided by mesa.
 	# Remove EGL, GLES, GLES2, and GLES3 provided by mesa.
-	# Remove execinfo provided by libandroid-execinfo.
+	# Remove execinfo.h as the backtrace(3) functions it declares are only
+	# provided by bionic from API level 33, so packages must not detect
+	# them at the default API level.
 	# Remove NDK vulkan headers.
 	rm usr/include/{sys/{capability,shm,sem},{glob,iconv,spawn,zlib,zconf},KHR/khrplatform,execinfo}.h
 	rm usr/include/unicode/{char16ptr,platform,ptypes,putil,stringoptions,ubidi,ubrk,uchar,uconfig,ucpmap,udisplaycontext,uenum,uldnames,ulocdata,uloc,umachine,unorm2,urename,uscript,ustring,utext,utf16,utf8,utf,utf_old,utypes,uvernum,uversion}.h
