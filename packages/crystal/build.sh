@@ -7,7 +7,7 @@ TERMUX_PKG_GIT_BRANCH=$TERMUX_PKG_VERSION
 TERMUX_PKG_SRCURL=git+https://github.com/crystal-lang/crystal
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="libc++, libevent, libgc, libgmp, libiconv, libllvm (<< $TERMUX_LLVM_NEXT_MAJOR_VERSION), libxml2, libyaml, openssl, pcre2, zlib"
-TERMUX_PKG_RECOMMENDS="clang, libffi, make, pkg-config"
+TERMUX_PKG_RECOMMENDS="libffi, make, pkg-config"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_EXCLUDED_ARCHES="arm, i686, x86_64"
 

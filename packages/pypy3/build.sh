@@ -17,7 +17,7 @@ TERMUX_PKG_SHA256=(
 )
 TERMUX_PKG_DEPENDS="gdbm, libandroid-posix-semaphore, libandroid-support, libbz2, libcrypt, libexpat, libffi, liblzma, libsqlite, ncurses, ncurses-ui-libs, openssl, zlib"
 TERMUX_PKG_BUILD_DEPENDS="aosp-libs, tk, xorgproto"
-TERMUX_PKG_RECOMMENDS="clang, make, pkg-config"
+TERMUX_PKG_RECOMMENDS="make, pkg-config"
 TERMUX_PKG_SUGGESTS="pypy3-tkinter"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_ON_DEVICE_BUILD_NOT_SUPPORTED=true

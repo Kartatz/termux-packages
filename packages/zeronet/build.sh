@@ -8,7 +8,7 @@ TERMUX_PKG_SRCURL=https://github.com/HelloZeroNet/ZeroNet/archive/refs/tags/v$TE
 TERMUX_PKG_SHA256=78a27e1687d8e3699a854b77b516c95b30a8ba667f7ebbef0aabf7ec6ec7272d
 TERMUX_PKG_PLATFORM_INDEPENDENT=true
 TERMUX_PKG_CONFFILES="etc/zeronet.conf"
-TERMUX_PKG_DEPENDS="bash, clang, make, openssl-tool, pkg-config, python"
+TERMUX_PKG_DEPENDS="bash, make, openssl-tool, pkg-config, python"
 TERMUX_PKG_RECOMMENDS="tor"
 
 termux_step_make_install() {

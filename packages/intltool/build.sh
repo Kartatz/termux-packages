@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=0.51.0
 TERMUX_PKG_REVISION=4
 TERMUX_PKG_SRCURL=https://launchpad.net/intltool/trunk/$TERMUX_PKG_VERSION/+download/intltool-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd
-TERMUX_PKG_DEPENDS="perl, clang, make, libexpat"
+TERMUX_PKG_DEPENDS="perl, make, libexpat"
 TERMUX_PKG_PLATFORM_INDEPENDENT=true
 
 termux_step_create_debscripts()  {

@@ -7,7 +7,7 @@ TERMUX_PKG_SRCURL=https://download.gnome.org/sources/vala/${TERMUX_PKG_VERSION%.
 TERMUX_PKG_SHA256=5ad7cbbfcc0de61b403d6797c9ef60455bfbebd8e162aec33b5b0b097adfb9d5
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="glib"
-TERMUX_PKG_RECOMMENDS="clang, pkg-config"
+TERMUX_PKG_RECOMMENDS="pkg-config"
 TERMUX_PKG_BREAKS="valac-dev"
 TERMUX_PKG_REPLACES="valac-dev"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--with-cgraph=no"
