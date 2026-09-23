@@ -34,6 +34,7 @@ ac_cv_func_unshare=yes
 ac_cv_func_uselocale=no
 ac_cv_type_struct_statx=no
 ac_cv_type_struct_fanotify_event_info_header=no
+ac_cv_type_struct_nsfs_file_handle=no
 --enable-setpriv
 --disable-agetty
 --disable-chmem
