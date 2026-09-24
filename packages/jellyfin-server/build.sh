@@ -104,7 +104,7 @@ termux_step_pre_configure() {
 		--extra-cxxflags="" \
 		--extra-ldflags="" \
 		--extra-ldexeflags="-pie" \
-		--extra-libs="-ldl -landroid-glob" \
+		--extra-libs="-ldl" \
 		--target-os=android \
 		--disable-static \
 		--enable-shared \

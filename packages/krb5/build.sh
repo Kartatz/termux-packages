@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION="1.22.2"
 TERMUX_PKG_SRCURL=https://kerberos.org/dist/krb5/$(grep -oP "^\d+\.\d+" <<< $TERMUX_PKG_VERSION)/krb5-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=3243ffbc8ea4d4ac22ddc7dd2a1dc54c57874c40648b60ff97009763554eaf13
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-support, libandroid-glob, libresolv-wrapper, readline, openssl, libdb"
+TERMUX_PKG_DEPENDS="libandroid-support, libresolv-wrapper, readline, openssl, libdb"
 TERMUX_PKG_BREAKS="krb5-dev"
 TERMUX_PKG_REPLACES="krb5-dev"
 TERMUX_PKG_CONFFILES="etc/krb5.conf var/krb5kdc/kdc.conf"
@@ -38,7 +38,7 @@ termux_step_pre_configure() {
 	cp "$TERMUX_PKG_BUILDER_DIR/netbsd_getpass.c" "$TERMUX_PKG_SRCDIR/clients/kpasswd/"
 
 	CFLAGS="$CFLAGS -D_PASSWORD_LEN=PASS_MAX"
-	export LIBS="-landroid-glob -lresolv_wrapper"
+	export LIBS="-lresolv_wrapper"
 }
 
 termux_step_post_make_install() {

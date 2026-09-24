@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="2.0.31"
 TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL="https://github.com/unbit/uwsgi/archive/refs/tags/${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=d5fb7b058a6e037cad1f0fb8841de56d673d80a3af036bba830143b60c67c3dc
-TERMUX_PKG_DEPENDS="libandroid-glob, libandroid-sysv-semaphore, libandroid-utimes, libcap, libcrypt, libjansson, libuuid, libxml2, openssl, pcre2, python"
+TERMUX_PKG_DEPENDS="libandroid-sysv-semaphore, libandroid-utimes, libcap, libcrypt, libjansson, libuuid, libxml2, openssl, pcre2, python"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
@@ -20,7 +20,6 @@ termux_step_pre_configure() {
 		"
 	LDFLAGS+="
 		-lpython${TERMUX_PYTHON_VERSION}
-		-landroid-glob
 		-landroid-sysv-semaphore
 		-landroid-utimes
 		"

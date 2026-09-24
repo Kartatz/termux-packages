@@ -272,7 +272,6 @@ termux_setup_toolchain_30() {
 	# Remove <sys/capability.h> because it is provided by libcap.
 	# Remove <sys/shm.h> from the NDK in favour of that from the libandroid-shmem.
 	# Remove <sys/sem.h> as it doesn't work for non-root.
-	# Remove <glob.h> as we currently provide it from libandroid-glob.
 	# Remove <iconv.h> as it's provided by libiconv.
 	# Remove <spawn.h> as it's only for future (later than android-27).
 	# Remove <zlib.h> and <zconf.h> as we build our own zlib.
@@ -283,7 +282,7 @@ termux_setup_toolchain_30() {
 	# provided by bionic from API level 33, so packages must not detect
 	# them at the default API level.
 	# Remove NDK vulkan headers.
-	rm usr/include/{sys/{capability,shm,sem},{glob,iconv,spawn,zlib,zconf},KHR/khrplatform,execinfo}.h
+	rm usr/include/{sys/{capability,shm,sem},{iconv,spawn,zlib,zconf},KHR/khrplatform,execinfo}.h
 	rm usr/include/unicode/{char16ptr,platform,ptypes,putil,stringoptions,ubidi,ubrk,uchar,uconfig,ucpmap,udisplaycontext,uenum,uldnames,ulocdata,uloc,umachine,unorm2,urename,uscript,ustring,utext,utf16,utf8,utf,utf_old,utypes,uvernum,uversion}.h
 	rm -Rf usr/include/vulkan
 	rm -Rf usr/include/{EGL,GLES{,2,3}}

@@ -7,9 +7,5 @@ TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://i3wm.org/i3status/i3status-${TERMUX_PKG_VERSION}.tar.xz
 TERMUX_PKG_SHA256=6c67f52cae4f139df764ad1cc736562be0f97750791bc212b53f34c06eaf2205
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-glob, libconfuse, libnl, pulseaudio, yajl"
+TERMUX_PKG_DEPENDS="libconfuse, libnl, pulseaudio, yajl"
 TERMUX_PKG_CONFFILES="etc/i3status.conf"
-
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
-}

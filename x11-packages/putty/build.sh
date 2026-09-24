@@ -7,7 +7,3 @@ TERMUX_PKG_SRCURL=https://the.earth.li/~sgtatham/putty/${TERMUX_PKG_VERSION}/put
 TERMUX_PKG_SHA256=13fd4db2936d03b73812a7bcc2a658e4dd29cc776a56c3670a7fc6f1a0ee8af8
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="gdk-pixbuf, glib, gtk3, libcairo, libx11, pango"
-
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
-}

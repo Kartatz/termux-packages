@@ -7,11 +7,10 @@ TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://mj.ucw.cz/download/linux/pci/pciutils-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=a42e6e3f76fb6b1f6ac2e08cdd151f6bf78bc4f6312c591f4b6ec197582ede3a
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-glob, zlib"
+TERMUX_PKG_DEPENDS="zlib"
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
 
 	# ${str@U} returns upper case string
 	local _ARCH=${TERMUX_ARCH@U}

@@ -8,7 +8,7 @@ TERMUX_PKG_SRCURL=https://github.com/tmux/tmux/archive/refs/tags/${TERMUX_PKG_VE
 TERMUX_PKG_SHA256=5e7b0f533b66e5633e2b72a9d483f9534a343ab7011eb2621b6309dfba553daa
 TERMUX_PKG_AUTO_UPDATE=true
 # Link against libandroid-support for wcwidth(), see https://github.com/termux/termux-packages/issues/224
-TERMUX_PKG_DEPENDS="ncurses, libevent, libandroid-support, libandroid-glob, utf8proc"
+TERMUX_PKG_DEPENDS="ncurses, libevent, libandroid-support, utf8proc"
 # Set default TERM to screen-256color, see: https://raw.githubusercontent.com/tmux/tmux/3.3/CHANGES
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--disable-static --with-TERM=screen-256color --enable-sixel --enable-utf8proc"
 TERMUX_PKG_BUILD_IN_SRC=true
@@ -16,7 +16,6 @@ TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_CONFFILES="etc/tmux.conf etc/profile.d/tmux.sh"
 
 termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
 	./autogen.sh
 }
 

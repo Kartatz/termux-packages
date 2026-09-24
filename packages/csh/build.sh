@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=20110502
 TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=https://deb.debian.org/debian/pool/main/c/csh/csh_${TERMUX_PKG_VERSION}.orig.tar.gz
 TERMUX_PKG_SHA256=8bcba4fe796df1b9992e2d94e07ce6180abb24b55488384f9954aa61ecd8d68b
-TERMUX_PKG_DEPENDS="libandroid-glob, libbsd"
+TERMUX_PKG_DEPENDS="libbsd"
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_post_get_source() {

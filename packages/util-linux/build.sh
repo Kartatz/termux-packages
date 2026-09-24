@@ -15,7 +15,6 @@ TERMUX_PKG_REVISION=4
 TERMUX_PKG_SRCURL="https://www.kernel.org/pub/linux/utils/util-linux/v${TERMUX_PKG_VERSION:0:4}/util-linux-${TERMUX_PKG_VERSION}.tar.xz"
 TERMUX_PKG_SHA256=82e9158eb12a9b0b569d84e1687fed9dd18fe89ccd8ef5ac3427218a7c0d7f7f
 # <dependency>: <binaries linking to that dependency>
-# libandroid-glob: lsclocks
 # libandroid-posix-semaphore: lsipc, lsns and the lib{blkid,smartcols,uuid} subpackages
 # libcap-ng: setpriv
 # libsmartcols: cal, column, fincore, irqtop, losetup, lsclocks, lscpu, lsfd, lsipc, lsirq, lsns, prlimit, wdctl, zramctl
@@ -23,7 +22,7 @@ TERMUX_PKG_SHA256=82e9158eb12a9b0b569d84e1687fed9dd18fe89ccd8ef5ac3427218a7c0d7f
 # zlib: fsck.cramfs
 #
 # libcrypt would be required for newgrp and sulogin, which we are not building
-TERMUX_PKG_DEPENDS="libandroid-glob, libandroid-posix-semaphore, libcap-ng, libsmartcols, ncurses, zlib"
+TERMUX_PKG_DEPENDS="libandroid-posix-semaphore, libcap-ng, libsmartcols, ncurses, zlib"
 TERMUX_PKG_ESSENTIAL=true
 TERMUX_PKG_BREAKS="util-linux-dev"
 TERMUX_PKG_REPLACES="util-linux-dev"

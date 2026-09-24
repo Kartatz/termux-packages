@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=0.8
 TERMUX_PKG_REVISION=11
 TERMUX_PKG_SRCURL=https://github.com/lathiat/avahi/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=c15e750ef7c6df595fb5f2ce10cac0fee2353649600e6919ad08ae8871e4945f
-TERMUX_PKG_DEPENDS="dbus, glib, libandroid-glob, libdaemon, libevent, libexpat, resolv-conf"
+TERMUX_PKG_DEPENDS="dbus, glib, libdaemon, libevent, libexpat, resolv-conf"
 TERMUX_PKG_BUILD_DEPENDS="g-ir-scanner, glib-cross"
 TERMUX_PKG_VERSIONED_GIR=false
 TERMUX_PKG_DISABLE_GIR=false
@@ -28,7 +28,6 @@ termux_step_pre_configure() {
 	termux_setup_gir
 
 	autoreconf -fi
-	LDFLAGS+=" -landroid-glob"
 }
 
 termux_step_post_make_install() {

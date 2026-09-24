@@ -6,7 +6,6 @@ TERMUX_PKG_VERSION="2.7"
 TERMUX_PKG_SRCURL="https://mirrors.kernel.org/gnu/inetutils/inetutils-${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=a156be1cde3c5c0ffefc262180d9369a60484087907aa554c62787d2f40ec086
 TERMUX_PKG_DEPENDS="readline"
-TERMUX_PKG_BUILD_DEPENDS="libandroid-glob"
 TERMUX_PKG_SUGGESTS="whois"
 TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_RM_AFTER_INSTALL="bin/whois share/man/man1/whois.1"
@@ -54,7 +53,7 @@ termux_step_pre_configure() {
 	sed -i 's,@HOSTBUILD@,'"$TERMUX_PKG_HOSTBUILD_DIR"',' "$TERMUX_PKG_SRCDIR/man/Makefile.am"
 	CFLAGS+=" -DNO_INLINE_GETPASS=1"
 	CPPFLAGS+=" -DNO_INLINE_GETPASS=1 -DLOGIN_PROCESS=6 -DDEAD_PROCESS=8 -DLOG_NFACILITIES=24 -fcommon"
-	LDFLAGS+=" -landroid-glob -llog"
+	LDFLAGS+=" -llog"
 	touch -d "next hour" ./man/whois.1
 }
 

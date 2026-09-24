@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION="0.41.0"
 TERMUX_PKG_REVISION=4
 TERMUX_PKG_SRCURL="https://github.com/mpv-player/mpv/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209
-TERMUX_PKG_DEPENDS="alsa-lib, ffmpeg, jack, libandroid-glob, libandroid-shmem, libarchive, libass, libbluray, libcaca, libdrm, libdvdnav, libiconv, libjpeg-turbo, libplacebo, libsixel, libuchardet, libwayland, libwayland-protocols, libx11, libxext, libxinerama, libxkbcommon, libxpresent, libxrandr, libxss, libzimg, littlecms, luajit, openal-soft, opengl, pipewire, pulseaudio, rubberband, vulkan-icd, zlib"
+TERMUX_PKG_DEPENDS="alsa-lib, ffmpeg, jack, libandroid-shmem, libarchive, libass, libbluray, libcaca, libdrm, libdvdnav, libiconv, libjpeg-turbo, libplacebo, libsixel, libuchardet, libwayland, libwayland-protocols, libx11, libxext, libxinerama, libxkbcommon, libxpresent, libxrandr, libxss, libzimg, littlecms, luajit, openal-soft, opengl, pipewire, pulseaudio, rubberband, vulkan-icd, zlib"
 TERMUX_PKG_BUILD_DEPENDS="vulkan-headers, vulkan-loader-generic"
 TERMUX_PKG_CONFLICTS="mpv"
 TERMUX_PKG_REPLACES="mpv"
@@ -59,7 +59,7 @@ termux_step_pre_configure() {
 		LDFLAGS+=" -L${_libdir}"
 		sed -i "s/aaudio_opt = get_option('aaudio').require(features\['android'\])/aaudio_opt = get_option('aaudio')/" "${TERMUX_PKG_SRCDIR}/meson.build"
 	fi
-	LDFLAGS+=" -landroid-glob -landroid-shmem"
+	LDFLAGS+=" -landroid-shmem"
 	sed -i "s/host_machine.system() == 'android'/false/" "${TERMUX_PKG_SRCDIR}/meson.build"
 }
 

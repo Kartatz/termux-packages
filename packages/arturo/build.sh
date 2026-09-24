@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=0.10.0
 TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL="https://github.com/arturo-lang/arturo/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=408646496895753608ad9dc6ddfbfa25921c03c4c7356f2832a9a63f4a7dc351
-TERMUX_PKG_DEPENDS="libgmp, libmpfr, libandroid-glob, libsqlite, openssl, pcre"
+TERMUX_PKG_DEPENDS="libgmp, libmpfr, libsqlite, openssl, pcre"
 TERMUX_PKG_EXCLUDED_ARCHES="arm, i686"
 TERMUX_PKG_BUILD_IN_SRC=true
 
@@ -24,7 +24,7 @@ termux_step_pre_configure() {
 		--clang.exe:"${TERMUX_HOST_PLATFORM}-clang"
 		--clang.linkerexe:"${TERMUX_HOST_PLATFORM}-clang"
 		--passC:"$CPPFLAGS $CFLAGS  -Wno-incompatible-function-pointer-types"
-		--passL:"$LDFLAGS -landroid-glob"
+		--passL:"$LDFLAGS"
 		-d:NOWEBVIEW
 		-d:NODIALOGS
 		-d:NOCLIPBOARD

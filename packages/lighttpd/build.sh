@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="1.4.85"
 TERMUX_PKG_SRCURL=https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-${TERMUX_PKG_VERSION}.tar.xz
 TERMUX_PKG_SHA256=18de51b393bac4a6827879e1a7ff377c169e414bae92cd245091d80fc2601d13
-TERMUX_PKG_DEPENDS="libandroid-glob, libandroid-spawn, libbz2, libcrypt, openssl, pcre2, zlib"
+TERMUX_PKG_DEPENDS="libandroid-spawn, libbz2, libcrypt, openssl, pcre2, zlib"
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -Dwith_bzip=enabled
@@ -25,7 +25,7 @@ termux_step_post_get_source() {
 }
 
 termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob -landroid-spawn"
+	LDFLAGS+=" -landroid-spawn"
 }
 
 termux_step_post_make_install() {

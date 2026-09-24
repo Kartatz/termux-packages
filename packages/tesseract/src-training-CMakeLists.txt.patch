@@ -18,10 +18,10 @@ diff -uNr tesseract-5.3.1/src/training/CMakeLists.txt tesseract-5.3.1.mod/src/tr
 +  add_library(unicharset_training SHARED ${unicharset_training_src})
    if(PKG_CONFIG_FOUND)
 -    target_link_libraries(unicharset_training PUBLIC common_training PkgConfig::ICU)
-+    target_link_libraries(unicharset_training PUBLIC common_training PkgConfig::ICU libandroid-glob.so)
++    target_link_libraries(unicharset_training PUBLIC common_training PkgConfig::ICU)
    else()
 -    target_link_libraries(unicharset_training PUBLIC common_training ${ICU_LIBRARIES})
-+    target_link_libraries(unicharset_training PUBLIC common_training ${ICU_LIBRARIES} libandroid-glob.so)
++    target_link_libraries(unicharset_training PUBLIC common_training ${ICU_LIBRARIES})
    endif()
    target_include_directories(unicharset_training
                               PUBLIC unicharset ${CMAKE_CURRENT_BINARY_DIR})

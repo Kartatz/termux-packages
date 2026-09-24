@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="16.1.0"
 TERMUX_PKG_SRCURL=https://gitlab.com/graphviz/graphviz/-/archive/$TERMUX_PKG_VERSION/graphviz-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=1e028b2b3e84e946c1d3e8c47590f8f0741bba1041fe6eff36eee87e598ea249
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="fontconfig, freetype, gdk-pixbuf, glib, harfbuzz, libandroid-glob, libc++, libcairo, libexpat, libgd, libgts, libltdl, librsvg, libwebp, pango, zlib"
+TERMUX_PKG_DEPENDS="fontconfig, freetype, gdk-pixbuf, glib, harfbuzz, libc++, libcairo, libexpat, libgd, libgts, libltdl, librsvg, libwebp, pango, zlib"
 TERMUX_PKG_BREAKS="graphviz-dev"
 TERMUX_PKG_REPLACES="graphviz-dev"
 TERMUX_PKG_BUILD_DEPENDS="libtool"
@@ -45,7 +45,7 @@ termux_step_pre_configure() {
 	local _libgcc_name="$(basename $_libgcc_file)"
 	LDFLAGS+=" -L$_libgcc_path -l:$_libgcc_name"
 
-	LDFLAGS+=" -lm -landroid-glob"
+	LDFLAGS+=" -lm"
 	LDFLAGS+=" -Wl,-rpath=$TERMUX_PREFIX/lib/graphviz"
 
 	chmod +x "$TERMUX_PKG_SRCDIR/lib/common/make_colortbl.py"

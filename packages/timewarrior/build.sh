@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="1.10.0"
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_SRCURL=git+https://github.com/GothenburgBitFactory/timewarrior
-TERMUX_PKG_DEPENDS="libandroid-glob, libc++"
+TERMUX_PKG_DEPENDS="libc++"
 
 # Installation of man pages is broken as of version 1.4.3.
 TERMUX_PKG_RM_AFTER_INSTALL="share/man"
@@ -14,5 +14,4 @@ termux_step_pre_configure() {
 	# Fix i686 builds.
 	CXXFLAGS+=" -Wno-c++11-narrowing"
 
-	LDFLAGS+=" -landroid-glob"
 }

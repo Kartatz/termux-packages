@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="2.15.4"
 TERMUX_PKG_REVISION="1"
 TERMUX_PKG_SRCURL="https://download.gnome.org/sources/libxml2/${TERMUX_PKG_VERSION%.*}/libxml2-${TERMUX_PKG_VERSION}.tar.xz"
 TERMUX_PKG_SHA256=98087fd181d9070724f3fbc65c7377db03038eb92bd882374daff44940138821
-TERMUX_PKG_DEPENDS="libandroid-glob, libiconv, zlib"
+TERMUX_PKG_DEPENDS="libiconv, zlib"
 TERMUX_PKG_BUILD_DEPENDS="doxygen, python, readline"
 TERMUX_PKG_BREAKS="libxml2-dev"
 TERMUX_PKG_REPLACES="libxml2-dev"
@@ -49,7 +49,6 @@ termux_step_configure() {
 		export PATH="$TERMUX_PKG_HOSTBUILD_DIR/ubuntu_packages/usr/bin:$PATH"
 	fi
 
-	LDFLAGS+=" -landroid-glob"
 	# This directory is usually made by doxygen
 	# and python/generator.py expects it to be there.
 	mkdir -p "$TERMUX_PKG_BUILDDIR/python/doc/xml"

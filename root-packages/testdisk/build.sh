@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION=7.1
 TERMUX_PKG_REVISION=6
 TERMUX_PKG_SRCURL=https://www.cgsecurity.org/testdisk-${TERMUX_PKG_VERSION}.tar.bz2
 TERMUX_PKG_SHA256=1413c47569e48c5b22653b943d48136cb228abcbd6f03da109c4df63382190fe
-TERMUX_PKG_DEPENDS="libuuid, zlib, libjpeg-turbo, libiconv, ncurses, libandroid-glob"
+TERMUX_PKG_DEPENDS="libuuid, zlib, libjpeg-turbo, libiconv, ncurses"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --bindir=$TERMUX_PREFIX/bin
 --sysconfdir=$TERMUX_PREFIX/etc
@@ -19,7 +19,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 "
 
 termux_step_pre_configure() {
-	export LIBS="-lncurses -landroid-glob"
+	export LIBS="-lncurses"
 }
 
 termux_step_make() {

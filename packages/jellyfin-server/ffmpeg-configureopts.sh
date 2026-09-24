@@ -35,7 +35,7 @@ printf '%s\n' "./configure --prefix='\${_FFMPEG_PREFIX}'
 --extra-cxxflags='$FF_CXXFLAGS'
 --extra-ldflags='$FF_LDFLAGS'
 --extra-ldexeflags='$FF_LDEXEFLAGS'
---extra-libs='$FF_LIBS -landroid-glob'
+--extra-libs='$FF_LIBS'
 --target-os=android
 --disable-static
 --enable-shared

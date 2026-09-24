@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="2.2.12"
 TERMUX_PKG_SRCURL="https://nim-lang.org/download/nim-$TERMUX_PKG_VERSION.tar.xz"
 TERMUX_PKG_SHA256=2639a06a5ea7a7fcf57df1e7e1ef4d1b2bee58c7ac9bd00dbd2aa5bea1e5a56a
-TERMUX_PKG_DEPENDS="git, libandroid-glob, openssl, libandroid-spawn"
+TERMUX_PKG_DEPENDS="git, openssl, libandroid-spawn"
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_BUILD_IN_SRC=true
 
@@ -64,7 +64,7 @@ termux_step_make() {
 	esac
 	export NIM_ARCH
 	CFLAGS+=" $CPPFLAGS -w -fno-strict-aliasing"
-	LDFLAGS+=" -landroid-glob -landroid-spawn"
+	LDFLAGS+=" -landroid-spawn"
 
 	for cmd in "${_NIM_TOOLS[@]}"; do
 		case "$cmd" in
@@ -84,7 +84,7 @@ termux_step_make() {
 				-d:"tempDir:$TERMUX_PREFIX/tmp" \
 				-d:release \
 				-d:sslVersion=3 \
-				-l:"$LDFLAGS -landroid-glob" \
+				-l:"$LDFLAGS" \
 				-t:"$CPPFLAGS $CFLAGS" \
 				$nim_flags \
 				c \

@@ -7,12 +7,12 @@ TERMUX_PKG_SRCURL=git+https://github.com/YosysHQ/yosys
 TERMUX_PKG_GIT_BRANCH="v$TERMUX_PKG_VERSION"
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_VERSION_REGEXP="\d+\.\d+(.\d+)?"
-TERMUX_PKG_DEPENDS="graphviz, libandroid-glob, libandroid-spawn, libc++, libffi, ncurses, readline, tcl, zlib, python"
+TERMUX_PKG_DEPENDS="graphviz, libandroid-spawn, libc++, libffi, ncurses, readline, tcl, zlib, python"
 TERMUX_PKG_BUILD_DEPENDS="flex"
 TERMUX_PKG_EXCLUDED_ARCHES="arm, i686"
 
 termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob -landroid-spawn"
+	LDFLAGS+=" -landroid-spawn"
 	export PATH="$TERMUX_PKG_TMPDIR:$PATH"
 
 	echo "#!$(readlink /proc/$$/exe)" > "$TERMUX_PKG_TMPDIR/python3-config"

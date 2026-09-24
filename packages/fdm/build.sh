@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION=2.2
 TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=https://github.com/nicm/fdm/releases/download/${TERMUX_PKG_VERSION}/fdm-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=53aad117829834e21c1b9bf20496a1aa1c0e0fb98fe7735e1e73314266fb6c16
-TERMUX_PKG_DEPENDS="libandroid-glob, libtdb, openssl, pcre2, zlib"
+TERMUX_PKG_DEPENDS="libtdb, openssl, pcre2, zlib"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --sysconfdir=$TERMUX_PREFIX/etc
 --localstatedir=$TERMUX_PREFIX/var
@@ -21,5 +21,4 @@ termux_step_pre_configure() {
 		cp $TERMUX_PKG_BUILDER_DIR/$f $TERMUX_PKG_SRCDIR/
 	done
 
-	LDFLAGS+=" -landroid-glob"
 }

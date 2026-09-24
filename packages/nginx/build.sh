@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="1.31.6"
 TERMUX_PKG_SRCURL=https://nginx.org/download/nginx-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=974ed5298a5e398e008704ed5db284e655fc270c596493dbccada452448fc9f1
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="libandroid-glob, libcrypt, pcre2, openssl, zlib"
+TERMUX_PKG_DEPENDS="libcrypt, pcre2, openssl, zlib"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_SERVICE_SCRIPT=("nginx" "mkdir -p $TERMUX_ANDROID_HOME/.nginx\nif [ -f \"$TERMUX_ANDROID_HOME/.nginx/nginx.conf\" ]; then CONFIG=\"$TERMUX_ANDROID_HOME/.nginx/nginx.conf\"; else CONFIG=\"$TERMUX_PREFIX/etc/nginx/nginx.conf\"; fi\nexec nginx -p ~/.nginx -g \"daemon off;\" -c \$CONFIG 2>&1")
 TERMUX_PKG_CONFFILES="
@@ -28,7 +28,6 @@ termux_step_pre_configure() {
 	fi
 
 	CPPFLAGS="$CPPFLAGS -DIOV_MAX=1024"
-	LDFLAGS="$LDFLAGS -landroid-glob"
 
 	# for cpu_set_t
 	CPPFLAGS+=" -D__USE_GNU=1"

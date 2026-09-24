@@ -6,9 +6,4 @@ TERMUX_PKG_VERSION="0.95"
 TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=http://ftp.wagner.pp.ru/pub/catdoc/catdoc-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=514a84180352b6bf367c1d2499819dfa82b60d8c45777432fa643a5ed7d80796
-TERMUX_PKG_DEPENDS="libandroid-glob"
 TERMUX_PKG_BUILD_IN_SRC=true
-
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
-}

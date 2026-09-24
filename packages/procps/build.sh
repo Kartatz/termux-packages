@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="4.0.7"
 TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL="https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-$TERMUX_PKG_VERSION.tar.xz"
 TERMUX_PKG_SHA256=9d2021f47a4501c667862c9942a92d1953694b21d11bcd1702e83eb594e3d67d
-TERMUX_PKG_DEPENDS="libandroid-glob, libandroid-support, ncurses"
+TERMUX_PKG_DEPENDS="libandroid-support, ncurses"
 TERMUX_PKG_BREAKS="procps-dev"
 TERMUX_PKG_REPLACES="procps-dev"
 TERMUX_PKG_ESSENTIAL=true
@@ -52,7 +52,6 @@ termux_step_pre_configure() {
 	LDFLAGS+=" -landroid-support"
 
 	# older than Android 9 don't have glob normally
-	LDFLAGS+=" -landroid-glob"
 
 	# Android does not have permission to acccess /proc/stat without root
 	CPPFLAGS+=" -DMOCK_STAT_FILE=\\\"$TERMUX_PREFIX/var/procps/stat\\\""

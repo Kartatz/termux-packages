@@ -8,7 +8,7 @@ TERMUX_PKG_SRCURL=https://github.com/edbrowse/edbrowse/archive/refs/tags/v${TERM
 TERMUX_PKG_SHA256=fde2fceceeb08befa23289e76f6e8a22a7ba87b77dca79b165adfb4170a98629
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
-TERMUX_PKG_DEPENDS="libandroid-glob, libcurl, openssl, pcre2, quickjs-ng, readline, unixodbc"
+TERMUX_PKG_DEPENDS="libcurl, openssl, pcre2, quickjs-ng, readline, unixodbc"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_EXTRA_MAKE_ARGS="-C src
 PREFIX=$TERMUX_PREFIX
@@ -18,8 +18,4 @@ QUICKJS_LIB=$TERMUX_PREFIX/lib/quickjs
 
 termux_step_post_get_source() {
 	cp $TERMUX_PKG_BUILDER_DIR/LICENSE.quickjs ./
-}
-
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
 }

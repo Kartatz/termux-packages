@@ -7,7 +7,7 @@ TERMUX_PKG_REVISION=5
 TERMUX_PKG_SRCURL="https://github.com/irssi/irssi/releases/download/$TERMUX_PKG_VERSION/irssi-$TERMUX_PKG_VERSION.tar.xz"
 TERMUX_PKG_SHA256=72a951cb0ad622785a8962801f005a3a412736c7e7e3ce152f176287c52fe062
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="glib, libandroid-glob, libiconv, libotr, ncurses, openssl, perl, utf8proc"
+TERMUX_PKG_DEPENDS="glib, libiconv, libotr, ncurses, openssl, perl, utf8proc"
 TERMUX_PKG_BREAKS="irssi-dev"
 TERMUX_PKG_REPLACES="irssi-dev"
 TERMUX_MESON_PERL_CROSS_FILE=$TERMUX_PKG_TMPDIR/meson-perl-cross-$TERMUX_ARCH.txt
@@ -21,7 +21,6 @@ termux_step_configure() {
 }
 
 termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
 
 	# Make build log less noisy.
 	CFLAGS+=" -Wno-compound-token-split-by-macro"

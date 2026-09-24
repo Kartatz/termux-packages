@@ -6,7 +6,7 @@ TERMUX_PKG_VERSION="0.38.0"
 TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL="https://oils.pub/download/oils-for-unix-${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256="a33453722819b55ee552bfd7f3c2bab8f1940def55d5c8b46af16ce95bdf8803"
-TERMUX_PKG_DEPENDS="libandroid-glob, libc++, readline"
+TERMUX_PKG_DEPENDS="libc++, readline"
 TERMUX_PKG_CONFLICTS="oils"
 TERMUX_PKG_REPLACES="oils"
 TERMUX_PKG_PROVIDES="oils"
@@ -24,7 +24,6 @@ termux_step_configure() {
 }
 
 termux_step_make() {
-	LDFLAGS+=" -landroid-glob"
 	_build/oils.sh --cxx "${CXX}"
 }
 

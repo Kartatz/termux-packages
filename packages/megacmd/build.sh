@@ -19,7 +19,7 @@ TERMUX_PKG_UPDATE_VERSION_REGEXP="\d+\.\d+\.\d+_Linux"
 TERMUX_PKG_UPDATE_VERSION_SED_REGEXP='s/_Linux//'
 
 # dbus is required for $PREFIX/var/lib/dbus/machine-id
-TERMUX_PKG_DEPENDS="c-ares, cryptopp, dbus, ffmpeg, freeimage, libandroid-glob, libc++, libcurl, libicu, libsodium, libsqlite, libuv, mediainfo, openssl, pcre, readline, zlib"
+TERMUX_PKG_DEPENDS="c-ares, cryptopp, dbus, ffmpeg, freeimage, libc++, libcurl, libicu, libsodium, libsqlite, libuv, mediainfo, openssl, pcre, readline, zlib"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DUSE_FFMPEG=ON
 -DUSE_PCRE=ON
@@ -50,7 +50,7 @@ termux_step_pre_configure() {
 	export OBJCXX="$CXX"
 
 	# -licui18n fixes 'ld.lld: error: undefined symbol: icu_78::Collator::createInstance'
-	LDFLAGS+=" -landroid-glob -lpcrecpp -lz -licui18n"
+	LDFLAGS+=" -lpcrecpp -lz -licui18n"
 	LDFLAGS+=" $($CC -print-libgcc-file-name)"
 
 	# Fix build against FFmpeg 6.0:

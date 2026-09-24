@@ -8,7 +8,7 @@ TERMUX_PKG_SHA256=03189061130693b274a4d0af47c4a3135d4a496ca111b78233593bfcb3d372
 # Hardcoded libpython${TERMUX_PYTHON_VERSION}.so is dlopen(3)ed by uftrace.
 # Please revbump and rebuild when bumping TERMUX_PYTHON_VERSION.
 # libandroid-spawn is dlopen(3)ed when built below API level 28.
-TERMUX_PKG_DEPENDS="capstone, libandroid-glob, libandroid-spawn, libc++, libdw, libelf, luajit, ncurses, python"
+TERMUX_PKG_DEPENDS="capstone, libandroid-spawn, libc++, libdw, libelf, luajit, ncurses, python"
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 # See https://github.com/termux/termux-packages/pull/21712 about arm build failure:
@@ -22,7 +22,7 @@ fi
 termux_step_pre_configure() {
 	# uftrace uses custom configure script implementation, so we need to provide some flags
 	CFLAGS+=" -DEFD_SEMAPHORE=1 -DEF_ARM_ABI_FLOAT_HARD=0x400 -w"
-	LDFLAGS+=" -Wl,--wrap=_Unwind_Resume -landroid-glob -largp"
+	LDFLAGS+=" -Wl,--wrap=_Unwind_Resume -largp"
 
 	if [ "$TERMUX_ARCH" = "i686" ]; then
 		export ARCH="i386"

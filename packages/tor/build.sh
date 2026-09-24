@@ -7,7 +7,6 @@ TERMUX_PKG_SRCURL=https://www.torproject.org/dist/tor-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=5e748d3272cdf44a7d7741173f371c8def3d96eecb77e93c89c50663ce9cc792
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="libevent, liblzma, openssl, resolv-conf, zlib"
-TERMUX_PKG_BUILD_DEPENDS="libandroid-glob"
 # We're not using '--enable-android' as it just defines 'USE_ANDROID', which
 # makes Tor writes the log to Android's logcat instead of to stdout/stderr, not
 # helpful in our case. Although it would be good to go through the source and

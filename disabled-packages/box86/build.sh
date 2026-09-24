@@ -8,7 +8,7 @@ _COMMIT_TIME=164444
 TERMUX_PKG_VERSION="0.3.0.20230402.164444ged329697"
 TERMUX_PKG_SRCURL=git+https://github.com/ptitSeb/box86
 TERMUX_PKG_GIT_BRANCH=master
-TERMUX_PKG_DEPENDS="libandroid-complex-math, libandroid-glob, libandroid-spawn, libandroid-sysv-semaphore"
+TERMUX_PKG_DEPENDS="libandroid-complex-math, libandroid-spawn, libandroid-sysv-semaphore"
 TERMUX_PKG_AUTO_UPDATE=true
 
 # box86 is for arm only
@@ -85,4 +85,3 @@ termux_step_pre_configure() {
 termux_step_make_install() {
 	install -Dm755 -t "${TERMUX_PREFIX}/bin" "${TERMUX_PKG_BUILDDIR}/box86"
 }
-

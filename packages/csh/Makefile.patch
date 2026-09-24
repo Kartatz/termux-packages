@@ -18,7 +18,7 @@
 -	${CC} ${CFLAGS} ${CPPFLAGS} -O0 -c $<
 -.endif
 +all:
-+	${CC} -o ${PROG} ${CFLAGS} -DBIONIC ${SRCS} ${LDFLAGS} -lbsd -landroid-glob -lc
++	${CC} -o ${PROG} ${CFLAGS} -DBIONIC ${SRCS} ${LDFLAGS} -lbsd -lc
 +
 +clean:
 +	rm -f ${CLEANFILES}

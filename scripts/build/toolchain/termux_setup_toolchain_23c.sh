@@ -203,7 +203,6 @@ termux_setup_toolchain_23c() {
 	# Remove <sys/capability.h> because it is provided by libcap.
 	# Remove <sys/shm.h> from the NDK in favour of that from the libandroid-shmem.
 	# Remove <sys/sem.h> as it doesn't work for non-root.
-	# Remove <glob.h> as we currently provide it from libandroid-glob.
 	# Remove <iconv.h> as it's provided by libiconv.
 	# Remove <spawn.h> as it's only for future (later than android-27).
 	# Remove <zlib.h> and <zconf.h> as we build our own zlib.
@@ -211,7 +210,7 @@ termux_setup_toolchain_23c() {
 	# Remove KHR/khrplatform.h provided by mesa.
 	# Remove EGL, GLES, GLES2, and GLES3 provided by mesa.
 	# Remove NDK vulkan headers.
-	rm usr/include/{sys/{capability,shm,sem},{glob,iconv,spawn,zlib,zconf},KHR/khrplatform}.h
+	rm usr/include/{sys/{capability,shm,sem},{iconv,spawn,zlib,zconf},KHR/khrplatform}.h
 	rm usr/include/unicode/{char16ptr,platform,ptypes,putil,stringoptions,ubidi,ubrk,uchar,uconfig,ucpmap,udisplaycontext,uenum,uldnames,ulocdata,uloc,umachine,unorm2,urename,uscript,ustring,utext,utf16,utf8,utf,utf_old,utypes,uvernum,uversion}.h
 	rm -Rf usr/include/vulkan
 	rm -Rf usr/include/{EGL,GLES{,2,3}}

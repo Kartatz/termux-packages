@@ -7,7 +7,7 @@ TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL="https://github.com/ice-wm/icewm/releases/download/$TERMUX_PKG_VERSION/icewm-$TERMUX_PKG_VERSION.tar.lz"
 TERMUX_PKG_SHA256=16ad06ea40973c478962eae87cb9d902c4590293bfdf165c79bc2b20a0c0c12a
 TERMUX_PKG_AUTO_UPDATE=true
-TERMUX_PKG_DEPENDS="alsa-lib, imlib2, libandroid-glob, libandroid-wordexp, libice, librsvg, libsm, libsndfile, libxcomposite, libxcursor, libxdamage, libxinerama, libxrandr, libxres, xdg-utils"
+TERMUX_PKG_DEPENDS="alsa-lib, imlib2, libandroid-wordexp, libice, librsvg, libsm, libsndfile, libxcomposite, libxcursor, libxdamage, libxinerama, libxrandr, libxres, xdg-utils"
 TERMUX_PKG_BUILD_DEPENDS="aosp-libs"
 TERMUX_PKG_SUGGESTS="xdg-menu"
 
@@ -19,7 +19,7 @@ termux_step_pre_configure() {
 		patch --silent -p1 < "$patch"
 	fi
 
-	LDFLAGS+=" -landroid-glob -landroid-wordexp"
+	LDFLAGS+=" -landroid-wordexp"
 
 	# Every instance of '/usr' in the code is replaceable with '$TERMUX_PREFIX'.
 	# Every instance of 'xdg-open' in the code is replaceable with 'xdg-utils-xdg-open'.

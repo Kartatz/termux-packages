@@ -8,7 +8,7 @@ TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://github.com/wjaguar/mtPaint/archive/${_COMMIT}.zip
 TERMUX_PKG_SHA256=12d861af3e6db4167390bbcf1fd1b79960753acd6ec049bc6cd0d9898c137e89
 TERMUX_PKG_AUTO_UPDATE=false
-TERMUX_PKG_DEPENDS="atk, freetype, gdk-pixbuf, glib, gtk3, harfbuzz, libandroid-glob, libcairo, libiconv, libjpeg-turbo, libpng, libtiff, libwebp, libx11, littlecms, openjpeg, pango, zlib"
+TERMUX_PKG_DEPENDS="atk, freetype, gdk-pixbuf, glib, gtk3, harfbuzz, libcairo, libiconv, libjpeg-turbo, libpng, libtiff, libwebp, libx11, littlecms, openjpeg, pango, zlib"
 TERMUX_PKG_RECOMMENDS="gifsicle"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
@@ -28,9 +28,6 @@ termux_step_post_get_source() {
 	fi
 }
 
-termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-glob"
-}
 
 termux_step_configure() {
 	sh $TERMUX_PKG_SRCDIR/configure ${TERMUX_PKG_EXTRA_CONFIGURE_ARGS}

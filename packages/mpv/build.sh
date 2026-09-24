@@ -7,7 +7,7 @@ TERMUX_PKG_VERSION="0.41.0"
 TERMUX_PKG_REVISION=3
 TERMUX_PKG_SRCURL="https://github.com/mpv-player/mpv/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz"
 TERMUX_PKG_SHA256=ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209
-TERMUX_PKG_DEPENDS="alsa-lib, ffmpeg, jack, libandroid-glob, libandroid-support, libarchive, libass, libcaca, libiconv, libplacebo, libsixel, libuchardet, luajit, openal-soft, pulseaudio, rubberband, zlib"
+TERMUX_PKG_DEPENDS="alsa-lib, ffmpeg, jack, libandroid-support, libarchive, libass, libcaca, libiconv, libplacebo, libsixel, libuchardet, luajit, openal-soft, pulseaudio, rubberband, zlib"
 TERMUX_PKG_AUTO_UPDATE=false
 TERMUX_PKG_RM_AFTER_INSTALL="share/icons share/applications"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
@@ -59,7 +59,6 @@ termux_step_pre_configure() {
 		LDFLAGS+=" -L${_libdir}"
 		sed -i "s/aaudio_opt = get_option('aaudio').require(features\['android'\])/aaudio_opt = get_option('aaudio')/" "${TERMUX_PKG_SRCDIR}/meson.build"
 	fi
-	LDFLAGS+=" -landroid-glob"
 	sed -i "s/host_machine.system() == 'android'/false/" "${TERMUX_PKG_SRCDIR}/meson.build"
 }
 

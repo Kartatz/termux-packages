@@ -5,7 +5,7 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION="9.20.29"
 TERMUX_PKG_SRCURL="https://downloads.isc.org/isc/bind9/${TERMUX_PKG_VERSION}/bind-${TERMUX_PKG_VERSION}.tar.xz"
 TERMUX_PKG_SHA256=587029508b3b1b43229fae416c97e5543aba45809cefaca98a5004a02a5736c1
-TERMUX_PKG_DEPENDS="cmocka, json-c, krb5, libandroid-glob, libcap, libnghttp2, liburcu, libuv, libxml2, openssl, readline, resolv-conf, zlib"
+TERMUX_PKG_DEPENDS="cmocka, json-c, krb5, libcap, libnghttp2, liburcu, libuv, libxml2, openssl, readline, resolv-conf, zlib"
 TERMUX_PKG_BREAKS="dnsutils-dev"
 TERMUX_PKG_REPLACES="dnsutils-dev"
 TERMUX_PKG_AUTO_UPDATE=true
@@ -25,7 +25,6 @@ lt_cv_prog_compiler_pic_works=yes
 termux_step_pre_configure() {
 	_RESOLV_CONF=$TERMUX_PREFIX/etc/resolv.conf
 	CFLAGS+=" $CPPFLAGS -DRESOLV_CONF=\\\"$_RESOLV_CONF\\\""
-	LDFLAGS+=" -landroid-glob"
 }
 
 termux_step_post_configure() {
