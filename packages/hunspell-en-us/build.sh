@@ -13,10 +13,10 @@ termux_step_make_install() {
 	#  https://cgit.freedesktop.org/libreoffice/dictionaries/log/en/en_US.aff
 	#  https://cgit.freedesktop.org/libreoffice/dictionaries/log/en/en_US.dic
 	# In which case we need to bump version and checksum used.
-	termux_download https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff \
+	termux_download https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_US.aff \
 			$TERMUX_PREFIX/share/hunspell/en_US.aff \
 			e746c882dd6f303c2c46e7452804b9201115a6942cfeb15f18f8edf774d2e24e
-	termux_download https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic \
+	termux_download https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_US.dic \
 			$TERMUX_PREFIX/share/hunspell/en_US.dic \
 			f0b1a234bd178bdd01875b2a392a9647f888b8fe879f79c52aae62c2759b3647
 	touch $TERMUX_PREFIX/share/hunspell/en_US.{aff,dic}
