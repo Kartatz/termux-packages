@@ -47,6 +47,87 @@ termux_patch_ndk_with_gcc_cross() {
 	rm -Rf "${_gcc_cross_dir}"/*/lib/libz.a "${_gcc_cross_dir}"/*/lib/libz.so \
 		"${_gcc_cross_dir}"/*/lib/static/libz.a "${_gcc_cross_dir}"/*/lib/static/libz.so \
 		"${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.a "${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.so
+
+	# The shared libgcc shipped by android-gcc-cross references
+	# dl_iterate_phdr without a version while its other libc imports are
+	# versioned, which the undefined symbols check in termux_step_massage
+	# rejects in every package shipping it. Version the reference against
+	# libc, like the rest of the imports.
+	while IFS= read -r -d '' _libegcc; do
+		python3 - "${_libegcc}" <<'PY'
+import struct, sys
+
+def cstr(data, off):
+	end = data.index(b'\0', off)
+	return data[off:end].decode()
+
+path = sys.argv[1]
+with open(path, 'rb') as f:
+	data = bytearray(f.read())
+
+if data[:4] != b'\x7fELF' or data[6] != 1:
+	sys.exit(0)
+is64 = data[4] == 2
+if is64:
+	e_shoff = struct.unpack_from('<Q', data, 0x28)[0]
+	e_shentsize = struct.unpack_from('<H', data, 0x3a)[0]
+	e_shnum = struct.unpack_from('<H', data, 0x3c)[0]
+	e_shstrndx = struct.unpack_from('<H', data, 0x3e)[0]
+	fmt, entsz = '<IIQQQQIIQQ', 64
+else:
+	e_shoff = struct.unpack_from('<I', data, 0x20)[0]
+	e_shentsize = struct.unpack_from('<H', data, 0x2e)[0]
+	e_shnum = struct.unpack_from('<H', data, 0x30)[0]
+	e_shstrndx = struct.unpack_from('<H', data, 0x32)[0]
+	fmt, entsz = '<IIIIIIIIII', 40
+
+sh = [struct.unpack_from(fmt, data, e_shoff + i * e_shentsize) for i in range(e_shnum)]
+stroff = sh[e_shstrndx][4]
+secs = {}
+for s in sh:
+	end = data.index(b'\0', stroff + s[0])
+	secs[data[stroff + s[0]:end].decode()] = s
+
+vr = secs.get('.gnu.version_r')
+dynstr = secs.get('.dynstr')
+veridx = None
+if vr and dynstr:
+	off, stop, doff = vr[4], vr[4] + vr[5], dynstr[4]
+	while off < stop:
+		vn_version, vn_cnt, vn_file, vn_aux, vn_next = struct.unpack_from('<HHIII', data, off)
+		fname = cstr(data, doff + vn_file)
+		aux = off + vn_aux
+		for _ in range(vn_cnt):
+			vna_hash, vna_flags, vna_other, vna_name, vna_next = struct.unpack_from('<IHHII', data, aux)
+			if fname == 'libc.so' and cstr(data, doff + vna_name) == 'LIBC':
+				veridx = vna_other
+			if not vna_next:
+				break
+			aux += vna_next
+		if not vn_next:
+			break
+		off += vn_next
+
+dynsym = secs.get('.dynsym')
+gnuver = secs.get('.gnu.version')
+patched = 0
+if veridx and dynsym and dynstr and gnuver:
+	soff, doff, voff = dynsym[4], dynstr[4], gnuver[4]
+	sentsz = dynsym[9] or (24 if is64 else 16)
+	for i in range(dynsym[5] // sentsz):
+		nm, = struct.unpack_from('<I', data, soff + i * sentsz)
+		name = cstr(data, doff + nm)
+		ver, = struct.unpack_from('<H', data, voff + i * 2)
+		if name == 'dl_iterate_phdr' and ver == 0:
+			struct.pack_into('<H', data, voff + i * 2, veridx)
+			patched += 1
+
+if patched:
+	with open(path, 'wb') as f:
+		f.write(data)
+	print(f"versioned {patched} dl_iterate_phdr reference(s) in {path}")
+PY
+	done < <(find "${_gcc_cross_dir}" -path '*/lib/gcc/libegcc.so' -print0)
 	# ndk-patch prefers ANDROID_HOME/ANDROID_SDK_ROOT over ANDROID_NDK,
 	# so blank them out to make it patch the overlay toolchain instead of
 	# the read-only lowerdir (NDK), which the overlay would not pick up.
