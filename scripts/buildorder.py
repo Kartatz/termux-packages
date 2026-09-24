@@ -9,6 +9,10 @@ termux_arch = os.getenv('TERMUX_ARCH') or 'aarch64'
 termux_global_library = os.getenv('TERMUX_GLOBAL_LIBRARY') or 'false'
 termux_pkg_library = os.getenv('TERMUX_PACKAGE_LIBRARY') or 'bionic'
 
+# Repositories whose packages are not to be built as part of the full build
+# order. Dependencies on packages from these repositories are dropped.
+REPOS_NOT_BUILT = frozenset(('x11-packages',))
+
 def unique_everseen(iterable, key=None):
     """List unique elements, preserving order. Remember all elements ever seen.
     See https://docs.python.org/3/library/itertools.html#itertools-recipes
@@ -212,7 +216,7 @@ class TermuxSubPackage:
                 result += [dependency_package]
         return unique_everseen(result)
 
-def resolve_package_dependencies(all_packages, pkgs_map):
+def resolve_package_dependencies(all_packages, pkgs_map, not_built_names=frozenset()):
     "Resolve alternative dependencies for the target architecture."
     for pkg in all_packages:
         resolved_deps = set()
@@ -220,10 +224,14 @@ def resolve_package_dependencies(all_packages, pkgs_map):
             if isinstance(dep, tuple):
                 resolved_dep = next((alt for alt in dep if alt in pkgs_map), None)
                 if not resolved_dep:
+                    if any(alt in not_built_names for alt in dep):
+                        continue
                     die('Package %s depends on non-existing package(s) "%s"' % (pkg.name, ' | '.join(dep)))
                 resolved_deps.add(resolved_dep)
             else:
                 if dep not in pkgs_map:
+                    if dep in not_built_names:
+                        continue
                     die('Package %s depends on non-existing package "%s"' % (pkg.name, dep))
                 resolved_deps.add(dep)
         pkg.deps = resolved_deps
@@ -240,10 +248,20 @@ def read_packages_from_directories(directories, fast_build_mode, full_buildmode)
             data = json.load(f)
         directories = []
         for d in data.keys():
-            if d != "pkg_format":
+            if d != "pkg_format" and d not in REPOS_NOT_BUILT:
                 directories.append(d)
 
+    not_built_names = set()
+    for repository_dir in sorted(REPOS_NOT_BUILT):
+        if not os.path.isdir(repository_dir):
+            continue
+        for pkgdir_name in sorted(os.listdir(repository_dir)):
+            if os.path.isfile(repository_dir + '/' + pkgdir_name + '/build.sh'):
+                not_built_names.add(pkgdir_name)
+
     for package_dir in directories:
+        if package_dir in REPOS_NOT_BUILT:
+            continue
         for pkgdir_name in sorted(os.listdir(package_dir)):
             dir_path = package_dir + '/' + pkgdir_name
             if os.path.isfile(dir_path + '/build.sh'):
@@ -269,7 +287,7 @@ def read_packages_from_directories(directories, fast_build_mode, full_buildmode)
                         pkgs_map[subpkg.name] = new_package
                     all_packages.append(subpkg)
 
-    resolve_package_dependencies(all_packages, pkgs_map)
+    resolve_package_dependencies(all_packages, pkgs_map, frozenset(not_built_names))
 
     for pkg in all_packages:
         for dependency_name in pkg.deps:
