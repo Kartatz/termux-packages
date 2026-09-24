@@ -144,7 +144,7 @@ termux_step_setup_variables() {
 	TERMUX_PKG_LICENSE_FILE="" # Relative path from $TERMUX_PKG_SRCDIR to LICENSE file. It is installed to $TERMUX_PREFIX/share/$TERMUX_PKG_NAME.
 	TERMUX_PKG_MASSAGEDIR=$TERMUX_TOPDIR/$TERMUX_PKG_NAME/massage
 	TERMUX_PKG_METAPACKAGE=false
-	TERMUX_PKG_NO_ELF_CLEANER=false # set this to true to disable running of termux-elf-cleaner on built binaries
+	TERMUX_PKG_NO_ELF_CLEANER=true # set this to true to disable running of termux-elf-cleaner on built binaries
 	TERMUX_PKG_NO_REPLACE_GUESS_SCRIPTS=false # if true, do not find and replace config.guess and config.sub in source directory
 	TERMUX_PKG_NO_SHEBANG_FIX=false # if true, skip fixing shebang accordingly to TERMUX_PREFIX
 	TERMUX_PKG_NO_SHEBANG_FIX_FILES="" # files to be excluded from fixing shebang
