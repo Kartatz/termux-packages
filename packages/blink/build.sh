@@ -22,7 +22,6 @@ termux_step_pre_configure() {
 	export CPPFLAGS+=" -D_GNU_SOURCE"
 	export CPPFLAGS+=" -D_POSIX_C_SOURCE"
 	export CPPFLAGS+=" -D_XOPEN_SOURCE"
-	export LDFLAGS+=" -lm"
 	export CFLAGS+=" -fpie"
 	export LDFLAGS+=" -pie"
 	#export LDFLAGS+=" -Wl,--image-base=0x23000000"
@@ -40,6 +39,7 @@ termux_step_pre_configure() {
 
 termux_step_configure() {
 	./configure --prefix="${TERMUX_PREFIX}"
+	echo 'LDLIBS += -lm' >> config.mk
 }
 
 termux_step_post_configure() {
