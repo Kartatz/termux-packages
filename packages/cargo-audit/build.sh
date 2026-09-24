@@ -13,6 +13,7 @@ TERMUX_PKG_BUILD_IN_SRC=true
 termux_step_make() {
 	termux_setup_rust
 
+	unset PINO_OPT_LEVEL
 	cargo build \
 		--release \
 		--target "${CARGO_TARGET_NAME}" \
