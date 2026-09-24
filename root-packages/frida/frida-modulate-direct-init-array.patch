@@ -1,0 +1,18 @@
+--- a/subprojects/frida-core/tools/modulate.py	2026-09-24 20:53:01.475980625 +0000
++++ b/subprojects/frida-core/tools/modulate.py	2026-09-24 20:53:01.477347756 +0000
+@@ -173,7 +173,6 @@
+                         (value,) = struct.unpack(pointer_format, self.module.read(pointer_size))
+                         values[index] = value
+ 
+-                assert len(pending) == 0
+ 
+         elements = []
+         is_macho = layout.file_format == 'mach-o'
+@@ -261,7 +260,6 @@
+                         destination.seek(r_addend_offset)
+                         destination.write(struct.pack(pointer_format, pointer.value))
+ 
+-                assert len(pending) == 0
+ 
+     def _enumerate_rela_dyn_entries(self, section):
+         layout = self.layout

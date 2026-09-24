@@ -6,6 +6,7 @@ _MAJOR_VERSION=17
 _MINOR_VERSION=2
 _MICRO_VERSION=14
 TERMUX_PKG_VERSION=${_MAJOR_VERSION}.${_MINOR_VERSION}.${_MICRO_VERSION}
+TERMUX_PKG_DEPENDS="zlib"
 TERMUX_PKG_REVISION=4
 TERMUX_PKG_GIT_BRANCH=$TERMUX_PKG_VERSION
 TERMUX_PKG_SRCURL=git+https://github.com/frida/frida
@@ -117,7 +118,7 @@ termux_step_post_configure() {
 		-Dlibmount=disabled
 		-Dtests=false
 		--force-fallback-for=pcre
-		-Diconv=external
+		-Diconv=libc
 		-Ddefault_library=static
 	"
 	if [ "$TERMUX_DEBUG_BUILD" = "true" ]; then
