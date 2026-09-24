@@ -4,7 +4,7 @@ TERMUX_PKG_LICENSE="Public Domain"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.2
 TERMUX_PKG_REVISION=2
-TERMUX_PKG_SRCURL=http://dl.fefe.de/fortune-${TERMUX_PKG_VERSION}.tar.bz2
+TERMUX_PKG_SRCURL=https://web.archive.org/web/2023id_/http://dl.fefe.de/fortune-${TERMUX_PKG_VERSION}.tar.bz2
 TERMUX_PKG_SHA256=cbb246a500366db39ce035632eb4954e09f1e03b28f2c4688864bfa8661b236a
 
 termux_step_make_install() {
