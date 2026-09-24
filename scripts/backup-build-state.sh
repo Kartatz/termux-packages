@@ -16,7 +16,7 @@ mkdir -p "$STAGE/build-all"
 docker cp "$CONTAINER:$BUILDALL_DIR/buildorder.txt" "$STAGE/build-all/"
 docker cp "$CONTAINER:$BUILDALL_DIR/buildstatus.txt" "$STAGE/build-all/"
 
-STATE_FILE="termux-build-backup_${ARCH}_$(date +%Y%m%d-%H%M%S).tar.xz"
+STATE_FILE="build-state.tar.xz"
 tar -C "$STAGE" -cf - build-all | xz -T 0 -6 >"$STAGE/$STATE_FILE"
 
 existing_names="$(gh api --paginate "repos/$REPO/releases" --jq '.[].assets[].name')"
