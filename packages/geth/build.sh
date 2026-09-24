@@ -16,6 +16,12 @@ termux_step_make() {
 	ln -sf "$TERMUX_PKG_SRCDIR" "$GOPATH"/src/github.com/ethereum/go-ethereum
 
 	cd "$GOPATH"/src/github.com/ethereum/go-ethereum
+	go mod download github.com/ethereum/hid
+	local hid_dir
+	hid_dir="$(ls -d "${GOPATH}"/pkg/mod/github.com/ethereum/hid@* | head -n1)"
+	chmod -R u+w "$hid_dir"
+	sed -i 's|^const size_t SIZEOF_WCHAR_T = sizeof(wchar_t);|#define SIZEOF_WCHAR_T (sizeof(wchar_t))|' "$hid_dir/wchar.go"
+
 	for applet in abidump abigen blsync devp2p era ethkey evm geth rlpdump; do
 		go -C ./cmd/"$applet" build -ldflags=-checklinkname=0 -v
 	done
