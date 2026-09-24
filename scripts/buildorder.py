@@ -212,7 +212,7 @@ class TermuxSubPackage:
                 result += [dependency_package]
         return unique_everseen(result)
 
-def resolve_package_dependencies(all_packages, pkgs_map):
+def resolve_package_dependencies(all_packages, pkgs_map, excluded_names=frozenset()):
     "Resolve alternative dependencies for the target architecture."
     for pkg in all_packages:
         resolved_deps = set()
@@ -220,15 +220,19 @@ def resolve_package_dependencies(all_packages, pkgs_map):
             if isinstance(dep, tuple):
                 resolved_dep = next((alt for alt in dep if alt in pkgs_map), None)
                 if not resolved_dep:
+                    if any(alt in excluded_names for alt in dep):
+                        continue
                     die('Package %s depends on non-existing package(s) "%s"' % (pkg.name, ' | '.join(dep)))
                 resolved_deps.add(resolved_dep)
             else:
                 if dep not in pkgs_map:
+                    if dep in excluded_names:
+                        continue
                     die('Package %s depends on non-existing package "%s"' % (pkg.name, dep))
                 resolved_deps.add(dep)
         pkg.deps = resolved_deps
 
-def read_packages_from_directories(directories, fast_build_mode, full_buildmode):
+def read_packages_from_directories(directories, fast_build_mode, full_buildmode, exclude=frozenset()):
     """Construct a map from package name to TermuxPackage.
     Subpackages are mapped to the parent package if fast_build_mode is false."""
     pkgs_map = {}
@@ -240,10 +244,20 @@ def read_packages_from_directories(directories, fast_build_mode, full_buildmode)
             data = json.load(f)
         directories = []
         for d in data.keys():
-            if d != "pkg_format":
+            if d != "pkg_format" and d not in exclude:
                 directories.append(d)
 
+    excluded_names = set()
+    for excluded_dir in exclude:
+        if not os.path.isdir(excluded_dir):
+            continue
+        for pkgdir_name in sorted(os.listdir(excluded_dir)):
+            if os.path.isfile(excluded_dir + '/' + pkgdir_name + '/build.sh'):
+                excluded_names.add(pkgdir_name)
+
     for package_dir in directories:
+        if package_dir in exclude:
+            continue
         for pkgdir_name in sorted(os.listdir(package_dir)):
             dir_path = package_dir + '/' + pkgdir_name
             if os.path.isfile(dir_path + '/build.sh'):
@@ -269,7 +283,7 @@ def read_packages_from_directories(directories, fast_build_mode, full_buildmode)
                         pkgs_map[subpkg.name] = new_package
                     all_packages.append(subpkg)
 
-    resolve_package_dependencies(all_packages, pkgs_map)
+    resolve_package_dependencies(all_packages, pkgs_map, frozenset(excluded_names))
 
     for pkg in all_packages:
         for dependency_name in pkg.deps:
@@ -361,6 +375,9 @@ def main():
     parser = argparse.ArgumentParser(description='Generate order in which to build dependencies for a package. Generates')
     parser.add_argument('-i', default=False, action='store_true',
                         help='Generate dependency list for fast-build mode. This includes subpackages in output since these can be downloaded.')
+    parser.add_argument('--exclude', action='append', default=[],
+                        help='Exclude packages from given directories when generating the full build order. '
+                             'Can be specified multiple times, e.g. --exclude x11-packages.')
     parser.add_argument('package', nargs='?',
                         help='Package to generate dependency list for.')
     parser.add_argument('package_dirs', nargs='*',
@@ -390,7 +407,7 @@ def main():
             die('Not a directory: ' + package)
         if not os.path.relpath(os.path.dirname(package), '.') in packages_directories:
             packages_directories.insert(0, os.path.dirname(package))
-    pkgs_map = read_packages_from_directories(packages_directories, fast_build_mode, full_buildorder)
+    pkgs_map = read_packages_from_directories(packages_directories, fast_build_mode, full_buildorder, frozenset(args.exclude))
 
     if full_buildorder:
         build_order = generate_full_buildorder(pkgs_map)

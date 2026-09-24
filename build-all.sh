@@ -20,26 +20,34 @@ test -f "$HOME"/.termuxrc && . "$HOME"/.termuxrc
 : ${TERMUX_FORMAT:="debian"}
 : ${TERMUX_DEBUG_BUILD:=""}
 : ${TERMUX_INSTALL_DEPS:="-s"}
+: ${TERMUX_EXCLUDE_REPOS:=""}
 # Set TERMUX_INSTALL_DEPS to -s unless set to -i
 
 _show_usage() {
-	echo "Usage: ./build-all.sh [-a ARCH] [-d] [-i] [-o DIR] [-f FORMAT]"
+	echo "Usage: ./build-all.sh [-a ARCH] [-d] [-i] [-o DIR] [-f FORMAT] [-X REPO]"
 	echo "Build all packages."
 	echo "  -a The architecture to build for: aarch64(default), arm, i686, x86_64 or all."
 	echo "  -d Build with debug symbols."
 	echo "  -i Build dependencies."
 	echo "  -o Specify deb directory. Default: debs/."
 	echo "  -f Specify format pkg: debian(default) or pacman."
+	echo "  -X Skip packages from the given repository directory (e.g. x11-packages). Can be specified multiple times."
 	exit 1
 }
 
-while getopts :a:hdio:f: option; do
+while getopts :a:hdio:f:X: option; do
 case "$option" in
 	a) TERMUX_ARCH="$OPTARG";;
 	d) TERMUX_DEBUG_BUILD='-d';;
 	i) TERMUX_INSTALL_DEPS='-i';;
 	o) TERMUX_OUTPUT_DIR="$(realpath -m "$OPTARG")";;
 	f) TERMUX_FORMAT="$OPTARG";;
+	X)
+		if [ ! -d "$TERMUX_SCRIPTDIR/$OPTARG" ]; then
+			echo "ERROR: Repository directory '$OPTARG' not found" 1>&2
+			exit 1
+		fi
+		TERMUX_EXCLUDE_REPOS="${TERMUX_EXCLUDE_REPOS:+$TERMUX_EXCLUDE_REPOS }${OPTARG%/}";;
 	h) _show_usage;;
 	*) _show_usage >&2 ;;
 esac
@@ -63,10 +71,25 @@ BUILDORDER_FILE=$BUILDALL_DIR/buildorder.txt
 BUILDSTATUS_FILE=$BUILDALL_DIR/buildstatus.txt
 
 if [ -e "$BUILDORDER_FILE" ]; then
-	echo "Using existing buildorder file: $BUILDORDER_FILE"
+	if [ -n "$TERMUX_EXCLUDE_REPOS" ] && grep -qE "($(printf '%s' "$TERMUX_EXCLUDE_REPOS" | tr ' ' '|'))/" "$BUILDORDER_FILE"; then
+		echo "Regenerating buildorder without excluded repositories: $TERMUX_EXCLUDE_REPOS"
+		_ordered_exclude_args=""
+		for repo in $TERMUX_EXCLUDE_REPOS; do
+			_ordered_exclude_args="${_ordered_exclude_args:+$_ordered_exclude_args }--exclude=$repo"
+		done
+		"$TERMUX_SCRIPTDIR/scripts/buildorder.py" $_ordered_exclude_args > "$BUILDORDER_FILE"
+		unset _ordered_exclude_args
+	else
+		echo "Using existing buildorder file: $BUILDORDER_FILE"
+	fi
 else
 	mkdir -p "$BUILDALL_DIR"
-	"$TERMUX_SCRIPTDIR/scripts/buildorder.py" > "$BUILDORDER_FILE"
+	_ordered_exclude_args=""
+	for repo in $TERMUX_EXCLUDE_REPOS; do
+		_ordered_exclude_args="${_ordered_exclude_args:+$_ordered_exclude_args }--exclude=$repo"
+	done
+	"$TERMUX_SCRIPTDIR/scripts/buildorder.py" $_ordered_exclude_args > "$BUILDORDER_FILE"
+	unset _ordered_exclude_args
 fi
 if [ -e "$BUILDSTATUS_FILE" ]; then
 	echo "Continuing build-all from: $BUILDSTATUS_FILE"
