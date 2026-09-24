@@ -92,7 +92,7 @@ while read -r PKG PKG_DIR; do
 	"$BUILDSCRIPT" -a "$TERMUX_ARCH" $TERMUX_DEBUG_BUILD --format "$TERMUX_FORMAT" \
 		--library $(test "${PKG_DIR%/*}" = "gpkg" && echo "glibc" || echo "bionic") \
 		${TERMUX_OUTPUT_DIR+-o $TERMUX_OUTPUT_DIR} $TERMUX_INSTALL_DEPS "$PKG_DIR" \
-		&> "$BUILDALL_DIR"/"${PKG}".out
+		&> "$BUILDALL_DIR"/"${PKG}".out </dev/null
 	BUILD_END=$(date "+%s")
 	BUILD_SECONDS=$(( BUILD_END - BUILD_START ))
 	echo "done in $BUILD_SECONDS sec"
