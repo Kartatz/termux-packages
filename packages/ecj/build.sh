@@ -31,6 +31,11 @@ termux_step_get_source() {
 }
 
 termux_step_make() {
+	local platform_dir=$ANDROID_HOME/platforms/android-$TERMUX_PKG_API_LEVEL
+	if [ ! -f $platform_dir/android.jar ]; then
+		$ANDROID_HOME/cmdline-tools/bin/sdkmanager \
+			--sdk_root=$ANDROID_HOME "platforms;android-$TERMUX_PKG_API_LEVEL" </dev/null
+	fi
 	mkdir -p $TERMUX_PREFIX/share/{dex,java}
 	$TERMUX_D8 \
 		--classpath $ANDROID_HOME/platforms/android-$TERMUX_PKG_API_LEVEL/android.jar \
