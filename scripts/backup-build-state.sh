@@ -31,14 +31,25 @@ backup() {
 		printf '%s\n' "$existing_names" | grep -qxF "$1"
 	}
 
+	# Create a new release, or reuse the release that already holds the
+	# build state file so repeated backups do not pile up releases.
 	create_release() {
+		local tag
+		if [ -n "$existing_tag" ]; then
+			tag="$(gh api "repos/$REPO/releases?per_page=100" \
+				--jq ".[] | select(any(.assets[]; .name == \"$existing_tag\")) | .tag_name" | head -n1)"
+			if [ -n "$tag" ]; then
+				echo "$tag"
+				return 0
+			fi
+		fi
 		local out
 		while :; do
-			local tag
-			tag="$(date +%Y%m%d-%H%M%S)"
-			if out="$(gh release create "$tag" -R "$REPO" --title "$tag" \
+			local new_tag
+			new_tag="$(date +%Y%m%d-%H%M%S)"
+			if out="$(gh release create "$new_tag" -R "$REPO" --title "$new_tag" \
 				--notes "Termux GCC toolchain build state and .deb packages." 2>&1)"; then
-				echo "$tag"
+				echo "$new_tag"
 				return 0
 			fi
 			if ! grep -qi "already exists" <<<"$out"; then
@@ -49,10 +60,10 @@ backup() {
 		done
 	}
 
-	tag="$(create_release)"
+	tag="$(existing_tag="$STATE_FILE" create_release)"
 	count=0
 
-	gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" >/dev/null
+	gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" --clobber >/dev/null
 	count=$((count + 1))
 	echo "Uploaded $STATE_FILE to $tag ($count/$MAX_ASSETS_PER_RELEASE)"
 
