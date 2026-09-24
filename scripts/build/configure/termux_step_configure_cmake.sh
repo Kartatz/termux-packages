@@ -17,12 +17,20 @@ termux_step_configure_cmake() {
 			LDFLAGS+=" --target=$CCTERMUX_HOST_PLATFORM"
    		fi
 
-		CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_CROSSCOMPILING=$(test \"${TERMUX_PKG_CMAKE_CROSSCOMPILING}\" = \"true\" && echo True || echo False)")
+ 		CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_CROSSCOMPILING=$(test \"${TERMUX_PKG_CMAKE_CROSSCOMPILING}\" = \"true\" && echo True || echo False)")
 		CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_LINKER=$TERMUX_STANDALONE_TOOLCHAIN/bin/$LD $LDFLAGS")
-  		if [ "$TERMUX_PACKAGE_LIBRARY" = "bionic" ]; then
+ 		if [ "$TERMUX_PACKAGE_LIBRARY" = "bionic" ]; then
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_NAME=Android")
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_VERSION=$TERMUX_PKG_API_LEVEL")
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_ANDROID_STANDALONE_TOOLCHAIN=$TERMUX_STANDALONE_TOOLCHAIN")
+			# CMake's find_library() does not search the per-ABI library
+			# directories of the NDK sysroot (usr/lib/<triple>/<api level>),
+			# and CMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY below confines the
+			# search to $TERMUX_PREFIX, so find_library(e.g. "m") would fail
+			# and abort the generate step with "set to NOTFOUND" errors.
+			# CMAKE_LIBRARY_PATH entries are always searched, point it at
+			# the sysroot library directory of the current ABI.
+			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_LIBRARY_PATH=$TERMUX_STANDALONE_TOOLCHAIN/sysroot/usr/lib/$TERMUX_HOST_PLATFORM/$TERMUX_PKG_API_LEVEL")
    		elif [ "$TERMUX_PACKAGE_LIBRARY" = "glibc" ]; then
      			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_NAME=Linux")
   		fi
