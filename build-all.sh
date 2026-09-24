@@ -99,6 +99,7 @@ while read -r PKG PKG_DIR; do
 
 	# Update build status
 	echo "$PKG" >> "$BUILDSTATUS_FILE"
+	rm -rf "${TERMUX_TOPDIR:?}/$PKG"
 done<"${BUILDORDER_FILE}"
 
 # Update build status
