@@ -9,3 +9,7 @@ TERMUX_PKG_SHA256=0ec4f2ab36e99d642f10978f67957d956e1d8dbe1eff1efb4619ef41ca9b07
 TERMUX_PKG_DEPENDS="libc++"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
+
+termux_step_post_get_source() {
+	sed -i 's/^LDFLAGS += -lOpenSLES$/LDLIBS += -lOpenSLES/' Makefile
+}
