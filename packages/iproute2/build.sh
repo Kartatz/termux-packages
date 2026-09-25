@@ -13,4 +13,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--color=auto"
 
 termux_step_pre_configure() {
 	CFLAGS+=" -fPIC"
+
+	# libcap's sys/capability.h is shadowed by the toolchain's bionic one
+	sed -i 's/if ${PKG_CONFIG} libcap --exists; then/if false; then/' configure
 }
