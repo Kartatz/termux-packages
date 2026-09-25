@@ -9,3 +9,7 @@ TERMUX_PKG_DEPENDS="libopus"
 TERMUX_PKG_BREAKS="libopusenc-dev"
 TERMUX_PKG_REPLACES="libopusenc-dev"
 TERMUX_PKG_AUTO_UPDATE=true
+
+termux_step_pre_configure() {
+	export LIBS+=" -lm"
+}
