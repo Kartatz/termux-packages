@@ -43,3 +43,10 @@ termux_step_configure() {
 		--host=$TERMUX_HOST_PLATFORM \
 		$TERMUX_PKG_EXTRA_CONFIGURE_ARGS
 }
+
+termux_step_post_configure() {
+	# The configure script appends -I$includedir to CPPFLAGS, which makes
+	# the unpatched bionic headers of the prefix shadow the ones of the
+	# toolchain, that are adjusted for GCC.
+	sed -i "s| -I${TERMUX_PREFIX}/include||g" "$TERMUX_PKG_BUILDDIR"/bc/Makefile
+}
