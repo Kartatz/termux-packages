@@ -12,6 +12,10 @@ TERMUX_PKG_REPLACES="wren-dev, wren (<< 0.3.0)"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_NO_STATICSPLIT=true
 
+termux_step_pre_configure() {
+	sed -i 's/ -m64//g' projects/make/*.make
+}
+
 termux_step_make() {
 	local QUIET_BUILD=
 	if [ "$TERMUX_QUIET_BUILD" = true ]; then
