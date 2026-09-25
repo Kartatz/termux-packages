@@ -119,7 +119,7 @@ restore() {
 	echo "Restored $(ls "$REPO_DIR"/output/*.deb | wc -l) debs to $REPO_DIR/output"
 
 	docker exec "$CONTAINER" bash -c \
-		'for p in '"$REPO_DIR"'/output/*.deb; do dpkg-deb --fsys-tarfile "$p" | tar -x -m --no-same-owner -C / || true; done'
+		'for p in /home/builder/termux-packages/output/*.deb; do dpkg-deb --fsys-tarfile "$p" | tar -x -m --no-same-owner -C / || true; done'
 	echo "Unpacked built packages into $CONTAINER prefix"
 }
 
