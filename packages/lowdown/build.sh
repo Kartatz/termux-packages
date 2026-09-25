@@ -32,6 +32,11 @@ termux_step_host_build() {
 	ln -s "${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/bin/bmake" "${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/bin/make"
 }
 
+termux_step_pre_configure() {
+	# The makefile does not pass CPPFLAGS to the compiler.
+	CFLAGS+=" $CPPFLAGS"
+}
+
 termux_step_configure() {
 	export MAKESYSPATH="${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/share/bmake/mk-bmake/"
 	export PATH="${TERMUX_PKG_HOSTBUILD_DIR}/prefix/usr/bin:${PATH}"
