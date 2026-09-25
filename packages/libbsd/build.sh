@@ -15,4 +15,6 @@ termux_step_pre_configure() {
 	autoreconf -fi
 	# Fix linker script error
 	LDFLAGS+=" -Wl,--undefined-version"
+	# Bionic only provides the POSIX name of the sticky bit.
+	CPPFLAGS+=" -DS_ISTXT=S_ISVTX"
 }
