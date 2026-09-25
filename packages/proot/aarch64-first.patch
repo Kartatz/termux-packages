@@ -1,0 +1,15 @@
+--- a/src/arch.h
++++ b/src/arch.h
+@@ -36,10 +36,10 @@
+ #if !defined(ARCH_X86_64) && !defined(ARCH_ARM_EABI) && !defined(ARCH_X86) && !defined(ARCH_SH4)
+ #    if defined(__x86_64__)
+ #        define ARCH_X86_64 1
+-#    elif defined(__ARM_EABI__)
+-#        define ARCH_ARM_EABI 1
+ #    elif defined(__aarch64__)
+ #        define ARCH_ARM64 1
++#    elif defined(__ARM_EABI__)
++#        define ARCH_ARM_EABI 1
+ #    elif defined(__arm__)
+ #        error "Only EABI is currently supported for ARM"
+ #    elif defined(__i386__)
