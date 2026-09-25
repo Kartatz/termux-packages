@@ -8,7 +8,3 @@ TERMUX_PKG_SRCURL=https://github.com/doctest/doctest/archive/refs/tags/v$TERMUX_
 TERMUX_PKG_SHA256=174ebc4e769928959614789c5b4e9c3d0a0f81a62bb608756b127bfebfb21331
 TERMUX_PKG_DEPENDS="libc++"
 TERMUX_PKG_AUTO_UPDATE=true
-
-termux_step_pre_configure() {
-	CXXFLAGS+=" -Wno-error=unsafe-buffer-usage -Wno-error=nullable-to-nonnull-conversion"
-}
