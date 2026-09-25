@@ -46,7 +46,7 @@ termux_step_pre_configure() {
 	export MERCURY_MKINIT=$_BUILD_UTIL/mkinit
 	export MERCURY_DEMANGLER=$_BUILD_UTIL/mdemangle
 	export MERCURY_COMPILER=$_BUILD_COMPILER/mercury_compile
-	export MERCURY_ALL_LOCAL_C_INCL_DIRS=-I$TERMUX_PREFIX/include
+	export MERCURY_ALL_LOCAL_C_INCL_DIRS=-isystem$TERMUX_PREFIX/include
 
 	mkdir -p _bin
 	ln -sf $MERCURY_MKINIT _bin/
