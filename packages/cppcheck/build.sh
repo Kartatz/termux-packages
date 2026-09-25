@@ -13,5 +13,5 @@ TERMUX_PKG_DEPENDS="libc++"
 # aren't using, and QT translation files, but as we are not building the GUI,
 # there is no need.  And anyways will lead to "Exec format" error as running
 # target binaries on host
-TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DUSE_MATCHCOMPILER=On -DDISABLE_DMAKE=ON"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DUSE_MATCHCOMPILER=On -DDISABLE_DMAKE=ON -DNO_UNIX_BACKTRACE_SUPPORT=ON"
 
