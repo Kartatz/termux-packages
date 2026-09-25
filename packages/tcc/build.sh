@@ -75,7 +75,7 @@ termux_step_make() {
 				otherinc+="${p}"
 			fi
 		done
-		sysinc="${sysinc}${otherinc%:}"
+		sysinc="${PWD}/include:${sysinc}${otherinc%:}"
 		unset CC CFLAGS LDFLAGS
 		./configure \
 			--prefix="/tmp/tcc.host" \
