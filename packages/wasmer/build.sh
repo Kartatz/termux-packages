@@ -16,6 +16,7 @@ TERMUX_PKG_UPDATE_VERSION_REGEXP="^v?[0-9]+\.[0-9]+\.[0-9]+$"
 TERMUX_PKG_EXCLUDED_ARCHES="arm, i686"
 
 termux_step_pre_configure() {
+	unset PINO_OPT_LEVEL
 	termux_setup_rust
 
 	# cargo-binstall has patches for other dependencies as well as rustls-platform-verifier, but wasmer doesn't need all of them, only the patch to replace instances of "android", particularly because wasmer's WASI guest needs absolute path /etc preserved
