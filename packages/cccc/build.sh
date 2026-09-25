@@ -15,7 +15,7 @@ TERMUX_PKG_MAKE_PROCESSES=1
 termux_step_host_build() {
 	find $TERMUX_PKG_SRCDIR -mindepth 1 -maxdepth 1 -exec cp -a \{\} ./ \;
 
-	export CC="gcc -m${TERMUX_ARCH_BITS}"
+	export CC="gcc -std=gnu89 -Wno-error=implicit-function-declaration -m${TERMUX_ARCH_BITS}"
 	export CCC="g++ -m${TERMUX_ARCH_BITS}"
 
 	sh build_posixgcc.sh
