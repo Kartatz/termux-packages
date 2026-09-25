@@ -1,0 +1,15 @@
+The build system does not compile src/unix/random-getentropy.c on
+Android, but the random dispatcher prefers it there through the
+__ANDROID_API__ check, leaving the library with an undefined reference.
+Use the getrandom path instead, which the build system does compile.
+--- a/src/random.c
++++ b/src/random.c
+@@ -35,8 +35,7 @@ static int uv__random(void* buf, size_t buflen) {
+ #elif defined(_AIX) || defined(__QNX__)
+   rc = uv__random_readpath("/dev/random", buf, buflen);
+-#elif defined(__APPLE__) || defined(__OpenBSD__) || \
+-     (defined(__ANDROID_API__) && __ANDROID_API__ >= 28)
++#elif defined(__APPLE__) || defined(__OpenBSD__)
+   rc = uv__random_getentropy(buf, buflen);
+   if (rc == UV_ENOSYS)
+     rc = uv__random_devurandom(buf, buflen);
