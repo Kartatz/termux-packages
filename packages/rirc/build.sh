@@ -18,13 +18,13 @@ termux_step_post_get_source() {
 	sed -i 's:CC       = cc::g' $TERMUX_PKG_SRCDIR/Makefile
 	sed -i 's:CFLAGS   =:CFLAGS   +=:g' $TERMUX_PKG_SRCDIR/Makefile
 	sed -i 's:LDFLAGS  =:LDFLAGS  +=:g' $TERMUX_PKG_SRCDIR/Makefile
+	sed -i 's:\$(LDFLAGS) -pthread \$(OBJ) \$(MBEDTLS):\$(OBJ) \$(MBEDTLS) -lmbedtls -lmbedx509 -lmbedcrypto -pthread \$(LDFLAGS):' $TERMUX_PKG_SRCDIR/Makefile
 	sed -i "s:\$(DESTDIR)\$(PREFIX):${TERMUX_PREFIX}:" $TERMUX_PKG_SRCDIR/Makefile
 }
 
 termux_step_pre_configure() {
 	CPPFLAGS+=" -DMBEDTLS_ALLOW_PRIVATE_ACCESS"
 	CFLAGS+=" $CPPFLAGS"
-	LDFLAGS+=" -lmbedtls -lmbedx509 -lmbedcrypto"
 }
 
 termux_step_configure() {
