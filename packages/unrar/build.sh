@@ -9,3 +9,9 @@ TERMUX_PKG_SHA256=634900842a3737d9cc15bbcc71d4c74cc713437e0bca296a573424fe5f2660
 TERMUX_PKG_DEPENDS="libandroid-support, libc++"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
+
+termux_step_pre_configure() {
+	# Unlike Clang, GCC does not define __LITTLE_ENDIAN__, which the
+	# endianness check in os.hpp relies on.
+	CPPFLAGS+=" -D__LITTLE_ENDIAN__"
+}
