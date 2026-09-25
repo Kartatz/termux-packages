@@ -9,6 +9,9 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
+	# aws-lc-sys' jitterentropy must not be compiled with optimizations
+	unset PINO_OPT_LEVEL
+
 	termux_setup_rust
 
 	# clash with rust host build
