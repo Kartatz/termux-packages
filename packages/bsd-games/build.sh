@@ -11,3 +11,11 @@ TERMUX_PKG_DEPENDS="ncurses"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_GROUPS="games"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--localstatedir=$TERMUX_PREFIX/games"
+
+termux_step_post_configure() {
+	# The -I flag of pkg-config makes the unpatched bionic headers of
+	# the prefix take precedence over the ones of the toolchain, which
+	# are the ones adjusted for GCC. Point it at the ncurses headers
+	# instead, which is all the package needs it for.
+	sed -i "s|-I${TERMUX_PREFIX}/include |-I${TERMUX_PREFIX}/include/ncurses |g" "${TERMUX_PKG_SRCDIR}"/Config.mk
+}
