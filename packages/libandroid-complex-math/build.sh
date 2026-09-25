@@ -17,12 +17,11 @@ TERMUX_PKG_AUTO_UPDATE=false
 termux_step_pre_configure() {
 	CPPFLAGS+=" -D__USE_GNU"
 	CFLAGS+=" -fPIC"
-	LDFLAGS+=" -lm"
 }
 
 termux_step_make() {
 	$CC $CFLAGS $CPPFLAGS -c $TERMUX_PKG_BUILDER_DIR/upstream-netbsd/lib/libm/complex/*.c
-	$CC $CFLAGS -shared $LDFLAGS -o libandroid-complex-math.so *.o
+	$CC $CFLAGS -shared $LDFLAGS -o libandroid-complex-math.so *.o -lm
 	$AR cru libandroid-complex-math.a *.o
 	cp -f $TERMUX_PKG_BUILDER_DIR/LICENSE $TERMUX_PKG_SRCDIR/
 }
