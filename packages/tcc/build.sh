@@ -65,6 +65,9 @@ termux_step_make() {
 		for d in $(echo | $CC -E -x c - -v 2>&1 | \
 				sed -n '/^#include <...> search/,/^End/p' | \
 				grep '^\s'); do
+			if [[ "${d}" = */lib/gcc/* ]]; then
+				continue
+			fi
 			p="$(readlink -f "${d}"):"
 			if [[ "${d}" = */sysroot/usr/* ]]; then
 				sysinc+="${p}"
