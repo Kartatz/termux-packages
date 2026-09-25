@@ -12,5 +12,6 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_VERSION_REGEXP='\d+\.\d+\.\d+(?!rc)'
 
 termux_step_pre_configure() {
+	export CC_FOR_BUILD="gcc -Wno-error=implicit-function-declaration"
 	autoreconf -fi
 }
