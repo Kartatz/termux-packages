@@ -10,6 +10,10 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="libuv"
 TERMUX_PKG_BUILD_IN_SRC=true
 
+termux_step_pre_configure() {
+	sed -i 's/ -m64//g' projects/make/*.make
+}
+
 termux_step_make() {
 	local QUIET_BUILD=
 	if [ "$TERMUX_QUIET_BUILD" = true ]; then
