@@ -10,3 +10,8 @@ TERMUX_PKG_BREAKS="unicorn-dev"
 TERMUX_PKG_REPLACES="unicorn-dev"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="-DTERMUX_ARCH=$TERMUX_ARCH"
+
+termux_step_pre_configure() {
+	sed -i 's|set(EXTRA_CFLAGS "--extra-cflags=")|set(EXTRA_CFLAGS "--extra-cflags=--target='"${CCTERMUX_HOST_PLATFORM}"' ")|' \
+		"${TERMUX_PKG_SRCDIR}/CMakeLists.txt"
+}
