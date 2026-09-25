@@ -12,6 +12,7 @@ termux_pkg_library = os.getenv('TERMUX_PACKAGE_LIBRARY') or 'bionic'
 # Repositories whose packages are not to be built as part of the full build
 # order. Dependencies on packages from these repositories are dropped.
 REPOS_NOT_BUILT = frozenset(('x11-packages',))
+PACKAGES_NOT_BUILT = frozenset(('wasi-libc',))
 
 def unique_everseen(iterable, key=None):
     """List unique elements, preserving order. Remember all elements ever seen.
@@ -265,6 +266,7 @@ def read_packages_from_directories(directories, fast_build_mode, full_buildmode)
         for pkgdir_name in sorted(os.listdir(repository_dir)):
             if os.path.isfile(repository_dir + '/' + pkgdir_name + '/build.sh'):
                 not_built_names.add(pkgdir_name)
+    not_built_names.update(PACKAGES_NOT_BUILT)
 
     for package_dir in directories:
         if package_dir in REPOS_NOT_BUILT:
@@ -275,6 +277,9 @@ def read_packages_from_directories(directories, fast_build_mode, full_buildmode)
                 new_package = TermuxPackage(package_dir + '/' + pkgdir_name, fast_build_mode)
 
                 if termux_arch in new_package.excluded_arches:
+                    continue
+
+                if new_package.name in PACKAGES_NOT_BUILT:
                     continue
 
                 if new_package.name in pkgs_map:

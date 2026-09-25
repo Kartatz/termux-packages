@@ -69,15 +69,6 @@ profiler = true
 llvm-config = "@TERMUX_PREFIX@/bin/llvm-config"
 profiler = true
 
-[target.wasm32-wasip1]
-wasi-root = "@TERMUX_PREFIX@/share/wasi-sysroot"
-
-[target.wasm32-wasip2]
-wasi-root = "@TERMUX_PREFIX@/share/wasi-sysroot"
-
-[target.wasm32-wasip3]
-wasi-root = "@TERMUX_PREFIX@/share/wasi-sysroot"
-
 [dist]
 src-tarball = false
 compression-formats = ["gz"]
