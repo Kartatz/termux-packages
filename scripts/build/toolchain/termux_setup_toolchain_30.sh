@@ -366,7 +366,11 @@ termux_setup_toolchain_30() {
 		#!/bin/sh
 		export PKG_CONFIG_DIR=
 		export PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR
-		exec $_HOST_PKGCONFIG "\$@"
+		# Downgrade the -I flag of the prefix include directory to -isystem:
+		# the plain flag would make the unpatched bionic headers of the prefix
+		# take precedence over the ones of the toolchain, which are the ones
+		# adjusted for GCC.
+		$_HOST_PKGCONFIG "\$@" | sed "s|-I$TERMUX_PREFIX/include |-isystem$TERMUX_PREFIX/include |g; s|-I$TERMUX_PREFIX/include\$|-isystem$TERMUX_PREFIX/include|g"
 	HERE
 	chmod +x "$TERMUX_STANDALONE_TOOLCHAIN"/bin/pkg-config
 
