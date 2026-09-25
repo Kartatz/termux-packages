@@ -257,7 +257,16 @@ termux_setup_toolchain_30() {
 	local env_host="${CARGO_TARGET_NAME//-/_}"
 	export CARGO_TARGET_${env_host@U}_LINKER="${CC}"
 	export CARGO_TARGET_${env_host@U}_RUSTFLAGS="-L${TERMUX__PREFIX__LIB_DIR} -C link-arg=-Wl,-rpath=${TERMUX__PREFIX__LIB_DIR} -C link-arg=-Wl,--enable-new-dtags"
-	export CFLAGS_${env_host}="${CPPFLAGS} ${CFLAGS}"
+	if [ "$TERMUX_ARCH" = "aarch64" ]; then
+		# The link-time libc stubs do not provide the LSE atomic
+		# helpers that GCC outlines atomics to, so keep them inline
+		# like the NDK Clang compilers do.
+		export CFLAGS_${env_host}="${CPPFLAGS} ${CFLAGS} -mno-outline-atomics"
+		export CXXFLAGS_${env_host}="${CPPFLAGS} ${CXXFLAGS} -mno-outline-atomics"
+	else
+		export CFLAGS_${env_host}="${CPPFLAGS} ${CFLAGS}"
+		export CXXFLAGS_${env_host}="${CPPFLAGS} ${CXXFLAGS}"
+	fi
 	export CC_x86_64_unknown_linux_gnu="gcc"
 	export CFLAGS_x86_64_unknown_linux_gnu="-O2"
 	export PKG_CONFIG_x86_64_unknown_linux_gnu="/usr/bin/pkg-config"
