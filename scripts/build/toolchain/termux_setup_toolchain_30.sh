@@ -4,17 +4,12 @@ termux_patch_ndk_with_gcc_cross() {
 	if [ ! -x "${_gcc_cross_dir}/bin/ndk-patch" ] || [ ! -f "${_gcc_cross_stamp}" ]; then
 		local _gcc_cross_tar="${_gcc_cross_dir}.tar.xz"
 		local _gcc_cross_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
-		local _obggcc_tar="${TERMUX_COMMON_CACHEDIR}/obggcc-261da59.tar.gz"
 		termux_download \
 			"https://github.com/AmanoTeam/android-gcc-cross/releases/latest/download/x86_64-unknown-linux-gnu.tar.xz" \
 			"${_gcc_cross_tar}"
 		termux_download \
 			"https://raw.githubusercontent.com/AmanoTeam/android-gcc-cross/refs/heads/master/patches/0001-Termux-patches.patch" \
 			"${_gcc_cross_patch}"
-		termux_download \
-			"https://github.com/AmanoTeam/obggcc/archive/261da59465c3df0651e0afd03d36b8d94bea0b16.tar.gz" \
-			"${_obggcc_tar}" \
-			72ae058bacd149c3842c50e7fa16b8980a4ed61adf44c138e82e5d7d36268b3f
 		rm -Rf "${_gcc_cross_dir}"
 		tar -xJf "${_gcc_cross_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
 		rm -f "${_gcc_cross_tar}"
@@ -44,22 +39,11 @@ termux_patch_ndk_with_gcc_cross() {
 			"${_gcc_cross_dir}"/include/{EGL,GLES{,2,3},vulkan} \
 			"${_gcc_cross_dir}"/include/execinfo.h \
 			"${_gcc_cross_dir}"/include/KHR/khrplatform.h
-		local _obggcc_dir="${TERMUX_COMMON_CACHEDIR}/obggcc-261da59465c3df0651e0afd03d36b8d94bea0b16"
-		rm -Rf "${_obggcc_dir}"
-		tar -xzf "${_obggcc_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
-		make -C "${_obggcc_dir}/tools/gcc-wrapper" gcc FLAVOR=PINO >/dev/null
-		# The toolchain installs the same wrapper binary under many
-		# triplet-prefixed and unprefixed compiler names. Replace every
-		# copy with the freshly built one.
-		local _wrapper
-		local _wrapper_sha256
-		_wrapper_sha256="$(sha256sum "${_gcc_cross_dir}/bin/clang" | cut -d' ' -f1)"
-		while IFS= read -r -d '' _wrapper; do
-			if [ "$(sha256sum "${_wrapper}" | cut -d' ' -f1)" = "${_wrapper_sha256}" ]; then
-				install -m 0755 "${_obggcc_dir}/tools/gcc-wrapper/gcc-wrapper" "${_wrapper}"
-			fi
-		done < <(find "${_gcc_cross_dir}/bin" -maxdepth 1 -type f -print0)
-		rm -Rf "${_obggcc_dir}" "${_obggcc_tar}"
+		# Refresh the compiler wrappers with the ones built from the
+		# current obggcc master: the ones shipped in the tarball forward
+		# bare Clang invocations without --target to the first Clang
+		# found in PATH, which is the toolchain itself, hanging forever.
+		bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
 		touch "${_gcc_cross_stamp}"
 	fi
 	rm -Rf "${_gcc_cross_dir}/include/zlib.h" "${_gcc_cross_dir}/include/zconf.h"
