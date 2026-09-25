@@ -23,6 +23,12 @@ termux_step_configure_cmake() {
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_NAME=Android")
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_VERSION=$TERMUX_PKG_API_LEVEL")
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_ANDROID_STANDALONE_TOOLCHAIN=$TERMUX_STANDALONE_TOOLCHAIN")
+			# CMake's Android platform otherwise derives the versionless
+			# NDK LLVM triple (e.g. aarch64-none-linux-android) as the
+			# compiler target, which the GCC wrappers do not accept.
+			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_C_COMPILER_TARGET=$CCTERMUX_HOST_PLATFORM")
+			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_CXX_COMPILER_TARGET=$CCTERMUX_HOST_PLATFORM")
+			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_ASM_COMPILER_TARGET=$CCTERMUX_HOST_PLATFORM")
 			# CMake's find_library() does not search the per-ABI library
 			# directories of the NDK sysroot (usr/lib/<triple>/<api level>),
 			# and CMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY below confines the
