@@ -28,17 +28,21 @@ termux_patch_ndk_with_gcc_cross() {
 		# sysroot. <execinfo.h> is removed too since the backtrace(3)
 		# functions it declares are only provided by bionic from API level
 		# 33, so packages must not detect them at the default level.
-		# <glob.h>, <iconv.h>, <spawn.h>, <sys/capability.h>, <sys/sem.h>
+		# <glob.h>, <iconv.h>, <spawn.h>, <sys/sem.h>
 		# and <sys/shm.h> are kept: the functions they declare are provided
 		# by bionic itself at the default API level (>= 24), so removing
 		# them would break packages whose configure scripts detect those
 		# functions (e.g. libx11, binutils), and the versions provided by
 		# the Termux packages shadowing them, when they are dependencies,
 		# take precedence through the prefix include dir anyway.
+		# <sys/capability.h> is removed instead: it does not come from
+		# bionic, and shadows the real one of the libcap package.
 		rm -Rf "${_gcc_cross_dir}"/include/unicode \
 			"${_gcc_cross_dir}"/include/{EGL,GLES{,2,3},vulkan} \
 			"${_gcc_cross_dir}"/include/execinfo.h \
-			"${_gcc_cross_dir}"/include/KHR/khrplatform.h
+			"${_gcc_cross_dir}"/include/KHR/khrplatform.h \
+			"${_gcc_cross_dir}"/*/include/sys/capability.h \
+			"${_gcc_cross_dir}"/include/sys/capability.h
 		# Refresh the compiler wrappers with the ones built from the
 		# current obggcc master: the ones shipped in the tarball forward
 		# bare Clang invocations without --target to the first Clang
