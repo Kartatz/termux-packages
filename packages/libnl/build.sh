@@ -52,3 +52,10 @@ termux_step_pre_configure() {
 
 	CFLAGS+=" -Dsockaddr_storage=__kernel_sockaddr_storage"
 }
+
+termux_step_make_install() {
+	make -j 1 install
+
+	install -Dm644 "$TERMUX_PKG_BUILDDIR/_getsubopt/lib/libgetsubopt.a" \
+		"$TERMUX_PREFIX/lib/libgetsubopt.a"
+}
