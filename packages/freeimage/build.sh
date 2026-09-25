@@ -19,4 +19,9 @@ termux_step_pre_configure() {
 		CFLAGS+=" -DPNG_ARM_NEON_OPT=0"
 	fi
 
+	# __reserved would expand to a null pointer constant or clash with
+	# the sigcontext struct field of the same name; nothing uses it.
+	sed -i '/#define __reserved/d' \
+		Source/LibJXR/common/include/wmsal.h
+
 }
