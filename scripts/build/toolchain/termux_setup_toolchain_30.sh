@@ -44,7 +44,7 @@ termux_patch_ndk_with_gcc_cross() {
 			"${_gcc_cross_dir}"/include/{EGL,GLES{,2,3},vulkan} \
 			"${_gcc_cross_dir}"/include/execinfo.h \
 			"${_gcc_cross_dir}"/include/KHR/khrplatform.h
-		local _obggcc_dir="${TERMUX_COMMON_CACHEDIR}/obggcc-261da59"
+		local _obggcc_dir="${TERMUX_COMMON_CACHEDIR}/obggcc-261da59465c3df0651e0afd03d36b8d94bea0b16"
 		rm -Rf "${_obggcc_dir}"
 		tar -xzf "${_obggcc_tar}" -C "${TERMUX_COMMON_CACHEDIR}"
 		make -C "${_obggcc_dir}/tools/gcc-wrapper" gcc FLAVOR=PINO >/dev/null
