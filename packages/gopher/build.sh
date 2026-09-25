@@ -14,5 +14,5 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 
 termux_step_pre_configure() {
 	CFLAGS+=" $CPPFLAGS"
-	LDFLAGS+=" -lncursesw"
+	export LIBS+=" -L${TERMUX__PREFIX__LIB_DIR} -lncursesw"
 }
