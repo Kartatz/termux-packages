@@ -24,7 +24,8 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --enable-libffi"
 
 termux_step_host_build() {
-	"$TERMUX_PKG_SRCDIR"/src/configure \
+	CC="gcc -Wno-error=implicit-function-declaration" \
+		"$TERMUX_PKG_SRCDIR"/src/configure \
 		$TERMUX_PKG_EXTRA_HOSTBUILD_CONFIGURE_ARGS
 	make -j "$TERMUX_PKG_MAKE_PROCESSES"
 }
