@@ -10,6 +10,7 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_TAG_TYPE=latest-release-tag
 
 termux_step_make() {
+	unset PINO_OPT_LEVEL
 	termux_setup_rust
 	termux_setup_capnp
 	termux_setup_protobuf
