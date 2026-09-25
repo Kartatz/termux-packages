@@ -7,3 +7,7 @@ TERMUX_PKG_SRCURL="https://github.com/sparsehash/sparsehash/archive/refs/tags/sp
 TERMUX_PKG_SHA256=8cd1a95827dfd8270927894eb77f62b4087735cbede953884647f16c521c7e58
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
+
+termux_step_pre_configure() {
+	CXXFLAGS+=" -std=gnu++17"
+}
