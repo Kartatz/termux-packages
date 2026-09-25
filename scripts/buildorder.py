@@ -12,7 +12,9 @@ termux_pkg_library = os.getenv('TERMUX_PACKAGE_LIBRARY') or 'bionic'
 # Repositories whose packages are not to be built as part of the full build
 # order. Dependencies on packages from these repositories are dropped.
 REPOS_NOT_BUILT = frozenset(('x11-packages',))
-PACKAGES_NOT_BUILT = frozenset(('wasi-libc',))
+# libdispatch cannot be built with GCC at all: its public API is built
+# around the Clang-only Blocks language extension.
+PACKAGES_NOT_BUILT = frozenset(('wasi-libc', 'libdispatch'))
 
 def unique_everseen(iterable, key=None):
     """List unique elements, preserving order. Remember all elements ever seen.
