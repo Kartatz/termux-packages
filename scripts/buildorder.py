@@ -92,6 +92,11 @@ def parse_build_file_variable(path, var):
 def parse_build_file_variable_bool(path, var):
     return parse_build_file_variable(path, var) == 'true'
 
+def parse_build_file_uses_python(path):
+    "Return whether the build script sets up the Python cross-compilation machinery."
+    with open(path, encoding="utf-8") as build_script:
+        return re.search(r'TERMUX_PKG_PYTHON_(COMMON|CROSS|TARGET)_BUILD_DEPS="[^"]', build_script.read()) is not None
+
 def add_prefix_glibc_to_pkgname(name):
     return name.replace("-static", "-glibc-static") if "static" == name.split("-")[-1] else name+"-glibc"
 
@@ -121,6 +126,8 @@ class TermuxPackage(object):
         self.separate_subdeps = parse_build_file_variable_bool(build_sh_path, 'TERMUX_PKG_SEPARATE_SUB_DEPENDS')
         self.accept_dep_scr = parse_build_file_variable_bool(build_sh_path, 'TERMUX_PKG_ACCEPT_PKG_IN_DEP')
 
+        if parse_build_file_uses_python(build_sh_path):
+            self.deps.add('python')
         if os.getenv('TERMUX_ON_DEVICE_BUILD') == "true" and termux_pkg_library == "bionic":
             always_deps = ['libc++']
             for dependency_name in always_deps:
