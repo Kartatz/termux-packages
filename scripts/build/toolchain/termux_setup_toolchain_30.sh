@@ -1,6 +1,6 @@
 termux_patch_ndk_with_gcc_cross() {
 	local _gcc_cross_dir="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross"
-	local _gcc_cross_stamp="${_gcc_cross_dir}/.termux-patches-applied-v4"
+	local _gcc_cross_stamp="${_gcc_cross_dir}/.termux-patches-applied-v5"
 	if [ ! -x "${_gcc_cross_dir}/bin/ndk-patch" ] || [ ! -f "${_gcc_cross_stamp}" ]; then
 		local _gcc_cross_tar="${_gcc_cross_dir}.tar.xz"
 		local _gcc_cross_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
@@ -47,6 +47,16 @@ termux_patch_ndk_with_gcc_cross() {
 		# toolchain first in PATH, where there is no cc for make.
 		env PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
 			bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
+		# Define O_BINARY and O_TEXT like Gnulib does, since the GNU
+		# tools expect them to exist when wrapping <fcntl.h>: unlike
+		# Clang, the toolchain's include directories come first, so
+		# generated wrapper headers cannot provide the definitions.
+		local _fcntl
+		while IFS= read -r -d '' _fcntl; do
+			if ! grep -q "define O_BINARY" "${_fcntl}"; then
+				printf '\n#ifndef O_BINARY\n#define O_BINARY 0\n#endif\n#ifndef O_TEXT\n#define O_TEXT 0\n#endif\n' >> "${_fcntl}"
+			fi
+		done < <(find "${_gcc_cross_dir}" -name fcntl.h -type f -print0)
 		touch "${_gcc_cross_stamp}"
 	fi
 	rm -Rf "${_gcc_cross_dir}/include/zlib.h" "${_gcc_cross_dir}/include/zconf.h"
