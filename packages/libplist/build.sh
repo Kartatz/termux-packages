@@ -28,4 +28,8 @@ termux_step_post_get_source() {
 termux_step_pre_configure() {
 	sed -e 's|#if _MSC_VER|#if defined(_MSC_VER)|' -i include/plist/plist.h
 	autoreconf -fi
+
+	# GNU ld does not resolve the dependencies of a shared library from
+	# its own directory when linking by path, unlike lld.
+	LDFLAGS+=" -Wl,-rpath-link,$TERMUX_PKG_BUILDDIR/src/.libs"
 }
