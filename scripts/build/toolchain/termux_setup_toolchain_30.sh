@@ -43,7 +43,10 @@ termux_patch_ndk_with_gcc_cross() {
 		# current obggcc master: the ones shipped in the tarball forward
 		# bare Clang invocations without --target to the first Clang
 		# found in PATH, which is the toolchain itself, hanging forever.
-		bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
+		# A host PATH is required: the build environment puts the
+		# toolchain first in PATH, where there is no cc for make.
+		env PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+			bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
 		touch "${_gcc_cross_stamp}"
 	fi
 	rm -Rf "${_gcc_cross_dir}/include/zlib.h" "${_gcc_cross_dir}/include/zconf.h"
