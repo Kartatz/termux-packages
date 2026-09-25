@@ -22,7 +22,7 @@ termux_step_make() {
 
 	# Building for host to generate manpages and completion.
 	chmod 700 -R $GOPATH/pkg && rm -rf $GOPATH/pkg
-	unset GOOS GOARCH CGO_LDFLAGS
+	unset GOOS GOARCH CGO_LDFLAGS CGO_CFLAGS
 	unset CC CXX CFLAGS CXXFLAGS LDFLAGS
 	go build \
 		-o "$TERMUX_PKG_BUILDDIR/hugo" \
