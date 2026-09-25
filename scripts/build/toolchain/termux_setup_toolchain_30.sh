@@ -257,15 +257,20 @@ termux_setup_toolchain_30() {
 	local env_host="${CARGO_TARGET_NAME//-/_}"
 	export CARGO_TARGET_${env_host@U}_LINKER="${CC}"
 	export CARGO_TARGET_${env_host@U}_RUSTFLAGS="-L${TERMUX__PREFIX__LIB_DIR} -C link-arg=-Wl,-rpath=${TERMUX__PREFIX__LIB_DIR} -C link-arg=-Wl,--enable-new-dtags"
+	# Rust links the prefix libc++ shared library on Android, so the
+	# C++ sources that its build scripts compile must use its headers.
+	# -I is needed because the toolchain injects its own C++ headers
+	# through -isystem, which would otherwise take precedence.
+	local _cxxflags_rust="-I${TERMUX__PREFIX__BASE_INCLUDE_DIR}/c++/v1 ${CPPFLAGS} ${CXXFLAGS}"
 	if [ "$TERMUX_ARCH" = "aarch64" ]; then
 		# The link-time libc stubs do not provide the LSE atomic
 		# helpers that GCC outlines atomics to, so keep them inline
 		# like the NDK Clang compilers do.
 		export CFLAGS_${env_host}="${CPPFLAGS} ${CFLAGS} -mno-outline-atomics"
-		export CXXFLAGS_${env_host}="${CPPFLAGS} ${CXXFLAGS} -mno-outline-atomics"
+		export CXXFLAGS_${env_host}="${_cxxflags_rust} -mno-outline-atomics"
 	else
 		export CFLAGS_${env_host}="${CPPFLAGS} ${CFLAGS}"
-		export CXXFLAGS_${env_host}="${CPPFLAGS} ${CXXFLAGS}"
+		export CXXFLAGS_${env_host}="${_cxxflags_rust}"
 	fi
 	export CC_x86_64_unknown_linux_gnu="gcc"
 	export CFLAGS_x86_64_unknown_linux_gnu="-O2"
