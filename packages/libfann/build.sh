@@ -12,8 +12,5 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag" # As of 2022-08-29T00:33:40 no github releases are available.
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+-DCMAKE_C_STANDARD_LIBRARIES=-lm
 "
-
-termux_step_pre_configure() {
-	LDFLAGS+=" -lm"
-}
