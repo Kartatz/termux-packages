@@ -28,6 +28,8 @@ termux_step_post_get_source() {
 	if [[ "${s}" != "${TERMUX_PKG_SHA256}  "* ]]; then
 		termux_error_exit "Checksum mismatch for source files."
 	fi
+
+	sed -i "s|\"__ANDROID__\\\\0\"|\"__ANDROID__\\\\0\"\n    \"__ANDROID_API__ ${TERMUX_PKG_API_LEVEL}\\\\0\"\n    \"__ANDROID_MIN_SDK_VERSION__ ${TERMUX_PKG_API_LEVEL}\\\\0\"|" tccpp.c
 }
 
 termux_step_pre_configure() {
