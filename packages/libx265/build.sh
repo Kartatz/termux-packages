@@ -39,7 +39,7 @@ termux_step_pre_configure() {
 	sed -i "s/@TERMUX_CLANG_TARGET_${TERMUX_ARCH^^}@/${_TERMUX_CLANG_TARGET}/" \
 		${TERMUX_PKG_SRCDIR}/CMakeLists.txt
 
-	LDFLAGS+=" -landroid-posix-semaphore"
+	LDFLAGS+=" -Wl,--no-as-needed,-landroid-posix-semaphore,--as-needed"
 }
 
 termux_step_configure() {
