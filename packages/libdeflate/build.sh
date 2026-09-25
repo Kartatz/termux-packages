@@ -7,3 +7,8 @@ TERMUX_PKG_SRCURL=https://github.com/ebiggers/libdeflate/archive/refs/tags/v${TE
 TERMUX_PKG_SHA256=bba03fffc5538576213675ce6968fcff6ce2e67d82e4d5febea2d05f9f13cf85
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_FORCE_CMAKE=true
+
+termux_step_post_make_install() {
+	rm -f $TERMUX_PREFIX/bin/libdeflate-gunzip
+	cp -f $TERMUX_PREFIX/bin/libdeflate-gzip $TERMUX_PREFIX/bin/libdeflate-gunzip
+}
