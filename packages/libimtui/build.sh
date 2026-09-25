@@ -6,9 +6,10 @@ TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.0.5
 TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=git+https://github.com/ggerganov/imtui
-TERMUX_PKG_DEPENDS="libc++, ncurses"
+TERMUX_PKG_DEPENDS="libc++, libcurl, ncurses"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DBUILD_SHARED_LIBS=ON
+-DIMTUI_BUILD_EXAMPLES=OFF
 "
 
 termux_step_post_make_install() {
