@@ -29,11 +29,23 @@ termux_step_make() {
 
 	local stub
 	for stub in android mediandk OpenSLES binder_ndk; do
+		local version_name
+		case "$stub" in
+			android) version_name=LIBANDROID;;
+			mediandk) version_name=LIBMEDIANDK;;
+			OpenSLES) version_name=LIBOPENSLES;;
+			binder_ndk) version_name=LIBBINDER_NDK;;
+		esac
+
+		local version_script="$TERMUX_PKG_TMPDIR/lib${stub}.map"
+		echo "${version_name} { global: *; };" > "$version_script"
+
 		"${CC}" -shared -fPIC \
 			-o "${TERMUX_PREFIX}/lib/lib${stub}.so" \
 			"${TERMUX_PKG_BUILDER_DIR}/lib${stub}-wrapper.c" \
 			-I"${TERMUX_PKG_BUILDER_DIR}" \
 			"${common_flags[@]}" \
+			-Wl,--version-script="$version_script" \
 			-ltermux-platform-ns
 	done
 }
