@@ -11,6 +11,9 @@ TERMUX_PKG_REPLACES="libbsd-dev"
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
+	# The overlay headers must come before the toolchain ones, which
+	# take precedence over the ones given through -isystem.
+	sed -i 's|-isystem $(top_srcdir)/include/bsd/|-I $(top_srcdir)/include/bsd/|' src/Makefile.am
 	# Update build scripts from automake 1.16 to whatever automake version is currently installed
 	autoreconf -fi
 	# Fix linker script error
