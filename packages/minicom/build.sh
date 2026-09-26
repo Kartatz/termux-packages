@@ -11,6 +11,7 @@ TERMUX_PKG_DEPENDS="libiconv, ncurses"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --disable-socket
 --disable-music
+--disable-lockdev
 --enable-lock-dir=$TERMUX_PREFIX/var/run
 "
 
