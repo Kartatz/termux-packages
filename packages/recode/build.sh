@@ -15,3 +15,14 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="LIBS=-liconv"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS+="
 ac_cv_path_HELP2MAN=:
 "
+
+termux_step_pre_configure() {
+	# The toolchain resolves its headers before the build directories, so
+	# the gnulib stdio.h wrapper providing these macros is never included.
+	CPPFLAGS+=" -include $TERMUX_PKG_BUILDER_DIR/gnulib-attrs.h"
+}
+
+termux_step_post_configure() {
+	make -C lib limits.h >/dev/null
+	sed -i 's|# include_next <limits.h>|# include <limits.h>|' lib/limits.h
+}
