@@ -11,6 +11,7 @@ TERMUX_PKG_REPLACES="inotify-tools-dev"
 TERMUX_PKG_BUILD_IN_SRC=true
 
 termux_step_pre_configure() {
+	rm -f $TERMUX_PREFIX/bin/fsnotifywait $TERMUX_PREFIX/bin/fsnotifywatch
 	./autogen.sh
 }
 
