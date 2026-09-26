@@ -11,9 +11,13 @@ TERMUX_PKG_UPDATE_TAG_TYPE=latest-release-tag
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_EXTRA_MAKE_ARGS="
 -C src
-COMP=clang
+COMP=gcc
 PREFIX=$TERMUX_PREFIX
 "
+
+termux_step_pre_configure() {
+	sed -i 's|gccversion := .*|gccversion := gcc|' "$TERMUX_PKG_SRCDIR/src/Makefile"
+}
 
 termux_step_configure() {
 	local TARGET_ARCH
