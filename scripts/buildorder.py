@@ -14,7 +14,7 @@ termux_pkg_library = os.getenv('TERMUX_PACKAGE_LIBRARY') or 'bionic'
 REPOS_NOT_BUILT = frozenset(('x11-packages',))
 # libdispatch cannot be built with GCC at all: its public API is built
 # around the Clang-only Blocks language extension.
-PACKAGES_NOT_BUILT = frozenset(('wasi-libc', 'libdispatch', 'zig', 'libobjc2', 'gnustep-make'))
+PACKAGES_NOT_BUILT = frozenset(('wasi-libc', 'libdispatch', 'zig', 'libobjc2', 'gnustep-make', 'tinygo'))
 
 def unique_everseen(iterable, key=None):
     """List unique elements, preserving order. Remember all elements ever seen.
