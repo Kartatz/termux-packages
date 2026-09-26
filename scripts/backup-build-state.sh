@@ -28,7 +28,7 @@ backup() {
 	existing_names="$(gh api --paginate "repos/$REPO/releases" --jq '.[].assets[].name')"
 
 	asset_exists() {
-		printf '%s\n' "$existing_names" | grep -qxF "$1"
+		{ printf '%s\n' "$existing_names"; cat "$STAGE/uploaded.names" 2>/dev/null; } | grep -qxF "$1"
 	}
 
 	# Create a new release, or reuse the release that already holds the
@@ -82,9 +82,9 @@ backup() {
 			tag="$(create_release)"
 			count=0
 		fi
-		gh release upload "$tag" -R "$REPO" "$file" >/dev/null
+		gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null
 		count=$((count + 1))
-		echo "Uploaded $name to $tag ($count/$MAX_ASSETS_PER_RELEASE)"
+		printf '%s\n' "$name" >> "$STAGE/uploaded.names"; echo "Uploaded $name to $tag ($count/$MAX_ASSETS_PER_RELEASE)"
 	done
 }
 
