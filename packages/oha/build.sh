@@ -40,6 +40,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_make() {
+	unset PINO_OPT_LEVEL
 	cargo build \
 		--jobs "$TERMUX_PKG_MAKE_PROCESSES" \
 		--target "${CARGO_TARGET_NAME}" \
