@@ -71,6 +71,12 @@ termux_step_pre_configure() {
 }
 
 termux_step_make() {
+	# The configure probes accept the Clang-only flags through the
+	# wrappers and bake them into the toolchain configuration, which
+	# then reaches the real GCC.
+	sed -Ei 's/"(-Qunused-arguments|--target=[a-z0-9]+-unknown-linux-android[0-9]*)"(, ?)?//g; s/\[,( ?)/[\1/g; s/( ?),\]/]/g; s/,+,/ ,/g' \
+		hadrian/cfg/default.target
+
 	(
 		unset CFLAGS LDFLAGS CPPFLAGS # For hadrian compilation
 
