@@ -70,6 +70,51 @@ termux_patch_ndk_with_gcc_cross() {
 		"${_gcc_cross_dir}"/*/lib/static/libz.a "${_gcc_cross_dir}"/*/lib/static/libz.so \
 		"${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.a "${_gcc_cross_dir}"/*/lib/nouzen/lib/libz.so
 
+	# The toolchain ships libssp.so as a linker script redirecting to libc,
+	# which cannot resolve the versioned __stack_chk_*@LIBSSP_1.0
+	# references left in libraries built by earlier toolchain builds that
+	# linked a real one. Provide a small library defining them.
+	local _ssp_triplet
+	case "$TERMUX_ARCH" in
+		aarch64) _ssp_triplet="aarch64-unknown-linux-android";;
+		arm) _ssp_triplet="armv7-unknown-linux-androideabi";;
+		i686) _ssp_triplet="i686-unknown-linux-android";;
+		x86_64) _ssp_triplet="x86_64-unknown-linux-android";;
+	esac
+	local _gcc_cross_ssp="${_gcc_cross_dir}/${_ssp_triplet}/lib/libssp.so"
+	if [ "$(head -c 4 "${_gcc_cross_ssp}" 2>/dev/null)" != "$(printf '\177ELF')" ]; then
+		local _ssp_stage="${_gcc_cross_dir}/.ssp-stub"
+		rm -Rf "${_ssp_stage}"
+		mkdir -p "${_ssp_stage}"
+		cat > "${_ssp_stage}/ssp.c" <<'SSPEOF'
+#include <stdint.h>
+#include <stdlib.h>
+
+uintptr_t __stack_chk_guard = 0x369d7a11c4e5f2b8ULL;
+
+void __stack_chk_fail(void) {
+	abort();
+}
+SSPEOF
+		cat > "${_ssp_stage}/ssp.map" <<'SSPEOF'
+LIBSSP_1.0 {
+	global:
+		__stack_chk_fail;
+		__stack_chk_guard;
+};
+SSPEOF
+		"${_gcc_cross_dir}/bin/clang" --target="${CCTERMUX_HOST_PLATFORM}" \
+			-shared -fPIC -O2 -Wl,--version-script="${_ssp_stage}/ssp.map" \
+			-o "${_ssp_stage}/libssp.so" "${_ssp_stage}/ssp.c"
+		install -m 0644 "${_ssp_stage}/libssp.so" "${_gcc_cross_ssp}"
+		rm -Rf "${_ssp_stage}"
+	fi
+	local _gcc_cross_ssp_api="${_gcc_cross_dir}/${_ssp_triplet}${TERMUX_PKG_API_LEVEL}/lib/libssp.so"
+	if [ -f "${_gcc_cross_ssp_api}" ] && [ ! -L "${_gcc_cross_ssp_api}" ] && [ "$(head -c 4 "${_gcc_cross_ssp_api}" 2>/dev/null)" != "$(printf '\177ELF')" ]; then
+		rm -f "${_gcc_cross_ssp_api}"
+		ln -s "../../${_ssp_triplet}/lib/libssp.so" "${_gcc_cross_ssp_api}"
+	fi
+
 	# The shared libgcc shipped by android-gcc-cross references
 	# dl_iterate_phdr without a version while its other libc imports are
 	# versioned, which the undefined symbols check in termux_step_massage
