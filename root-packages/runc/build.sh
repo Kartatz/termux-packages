@@ -8,11 +8,23 @@ TERMUX_PKG_SHA256=94d566d8b017d6cdffc684560a4f069bb87f86534976c41d768711c85e1948
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_BUILD_DEPENDS="libseccomp-static"
 
+termux_step_post_get_source() {
+	local _f
+	while IFS= read -r -d '' _f; do
+		sed -Ei 's@^const[[:space:]]+(uint32_t|uintptr_t|int|unsigned int)[[:space:]]+(C_[A-Za-z_0-9]+)[[:space:]]+=[[:space:]]+(.+);$@#define \2 \3@' "$_f"
+		sed -i 's|#define C_ARCH_BAD ARCH_BAD|#define C_ARCH_BAD 0xFFFFFFFFu|' "$_f"
+	done < <(grep -rlZE '^const[[:space:]]+(uint32_t|uintptr_t|int|unsigned int)[[:space:]]+C_' \
+		--include='*.go' libcontainer vendor/github.com/seccomp/libseccomp-golang)
+}
+
 termux_step_make() {
 	${CC} -c -o stubs.o "$TERMUX_PKG_BUILDER_DIR/stubs.c"
 	${AR} rcs liblog.a stubs.o
 
 	export CGO_LDFLAGS="-L$TERMUX_PKG_BUILDDIR"
+	# The pkg-config wrapper emits -isystem for the prefix include dir,
+	# which cgo does not accept by default.
+	export CGO_CFLAGS_ALLOW=".*"
 
 	termux_setup_golang
 
