@@ -15,7 +15,7 @@ termux_step_post_get_source() {
 }
 
 termux_step_make() {
-	$CXX $CXXFLAGS $CPPFLAGS $LDFLAGS -lncurses -o npush npush.cpp
+	$CXX $CXXFLAGS $CPPFLAGS -o npush npush.cpp $LDFLAGS -lncurses
 }
 
 termux_step_make_install() {
