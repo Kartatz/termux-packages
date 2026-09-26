@@ -35,7 +35,7 @@ backup() {
 	# build state file so repeated backups do not pile up releases.
 	create_release() {
 		local tag
-		if [ -n "$existing_tag" ]; then
+		if [ -n "${existing_tag:-}" ]; then
 			tag="$(gh api "repos/$REPO/releases?per_page=100" \
 				--jq ".[] | select(any(.assets[]; .name == \"$existing_tag\")) | .tag_name" | head -n1)"
 			if [ -n "$tag" ]; then
@@ -61,11 +61,9 @@ backup() {
 	}
 
 	tag="$(existing_tag="$STATE_FILE" create_release)"
-	count=0
 
 	gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" --clobber >/dev/null
-	count=$((count + 1))
-	echo "Uploaded $STATE_FILE to $tag ($count/$MAX_ASSETS_PER_RELEASE)"
+	count="$(gh api "repos/$REPO/releases/tags/$tag" --jq '.assets | length')"
 
 	shopt -s nullglob
 	for file in "$REPO_DIR"/output/*.deb; do
