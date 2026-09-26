@@ -47,10 +47,7 @@ termux_step_configure() {
 	export PATH="$NDK/shader-tools/linux-x86_64:$PATH"
 	LDFLAGS+=" -landroid-spawn"
 
-	local _libvulkan=vulkan
-	if [[ "${TERMUX_ON_DEVICE_BUILD}" == "false" && "${TERMUX_PKG_API_LEVEL}" -lt 28 ]]; then
-		_libvulkan="${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/lib/${TERMUX_HOST_PLATFORM}/28/libvulkan.so"
-	fi
+	local _libvulkan="${TERMUX_STANDALONE_TOOLCHAIN}/sysroot/usr/lib/${TERMUX_HOST_PLATFORM}/28/libvulkan.so"
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DVulkan_LIBRARY=${_libvulkan}"
 
 	export TARGET_CMAKE_TOOLCHAIN_FILE="$TERMUX_PKG_TMPDIR/android.toolchain.cmake"
