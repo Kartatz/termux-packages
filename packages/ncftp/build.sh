@@ -17,3 +17,8 @@ termux_step_pre_configure() {
 
 	export ac_cv_path_TAR=$TERMUX_PREFIX/bin/tar
 }
+
+termux_step_post_make_install() {
+	rm -f $TERMUX_PREFIX/bin/ncftpspooler
+	cp -f $TERMUX_PREFIX/bin/ncftpbatch $TERMUX_PREFIX/bin/ncftpspooler
+}
