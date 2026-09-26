@@ -15,6 +15,7 @@ termux_step_post_get_source() {
 }
 
 termux_step_pre_configure() {
+	rm -Rf $TERMUX_PREFIX/lib/transcript1
 	local libtooldir=$TERMUX_PKG_TMPDIR/_libtool
 	mkdir -p $libtooldir
 	pushd $libtooldir
