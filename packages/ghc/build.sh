@@ -44,6 +44,9 @@ __setup_bootstrap_compiler() {
 	) &>/dev/null
 
 	rm -Rf "$temp_folder" "$tarball"
+
+	sed -Ei 's|--target=[a-z0-9]+-unknown-linux-android[0-9]* ?||g; s|-Qunused-arguments ?||g' \
+		"$runtime_folder/lib/ghc-$version/lib/settings"
 }
 
 termux_step_pre_configure() {
