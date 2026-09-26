@@ -89,11 +89,34 @@ termux_patch_ndk_with_gcc_cross() {
 		cat > "${_ssp_stage}/ssp.c" <<'SSPEOF'
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 uintptr_t __stack_chk_guard = 0x369d7a11c4e5f2b8ULL;
 
 void __stack_chk_fail(void) {
 	abort();
+}
+
+void *__memcpy_chk(void *dst, const void *src, size_t len, size_t dstlen) {
+	if (len > dstlen) {
+		abort();
+	}
+	return memcpy(dst, src, len);
+}
+
+void *__memset_chk(void *dst, int c, size_t len, size_t dstlen) {
+	if (len > dstlen) {
+		abort();
+	}
+	return memset(dst, c, len);
+}
+
+char *__strcpy_chk(char *dst, const char *src, size_t dstlen) {
+	size_t len = strlen(src) + 1;
+	if (len > dstlen) {
+		abort();
+	}
+	return memcpy(dst, src, len);
 }
 SSPEOF
 		cat > "${_ssp_stage}/ssp.map" <<'SSPEOF'
@@ -101,6 +124,9 @@ LIBSSP_1.0 {
 	global:
 		__stack_chk_fail;
 		__stack_chk_guard;
+		__memcpy_chk;
+		__memset_chk;
+		__strcpy_chk;
 };
 SSPEOF
 		"${_gcc_cross_dir}/bin/clang" --target="${CCTERMUX_HOST_PLATFORM}" \
