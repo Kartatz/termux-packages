@@ -8,3 +8,8 @@ TERMUX_PKG_SRCURL=https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/$
 TERMUX_PKG_SHA256=daf972a89577f8772602bf2eb38b6a3dd3d922bf5724d45e7f9589b5e830442c
 TERMUX_PKG_EXTRA_MAKE_ARGS="LIBRARY_REL=lib"
 TERMUX_PKG_BUILD_IN_SRC=true
+
+termux_step_make_install() {
+	rm -f $TERMUX_PREFIX/lib/libargon2.so
+	make -j 1 ${TERMUX_PKG_EXTRA_MAKE_ARGS} install
+}
