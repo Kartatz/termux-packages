@@ -23,7 +23,7 @@ termux_step_host_build() {
 	mkdir $_PREFIX_FOR_BUILD
 	autoreconf -fi $srcdir/gmp
 	$srcdir/configure ABI=${TERMUX_ARCH_BITS} \
-		CFLAGS=-m${TERMUX_ARCH_BITS} LDFLAGS=-m${TERMUX_ARCH_BITS} \
+		CFLAGS="-m${TERMUX_ARCH_BITS} -std=gnu17" LDFLAGS=-m${TERMUX_ARCH_BITS} \
 		--prefix=$_PREFIX_FOR_BUILD --srcdir=$srcdir --disable-c99complex
 	make
 	make install
