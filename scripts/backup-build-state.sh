@@ -82,7 +82,16 @@ backup() {
 			tag="$(create_release)"
 			count=0
 		fi
-		gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null
+		if ! gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null 2>"$STAGE/upload.err"; then
+			if grep -q "file_count limited" "$STAGE/upload.err"; then
+				tag="$(create_release)"
+				count=0
+				gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null || exit 1
+			else
+				cat "$STAGE/upload.err"
+				exit 1
+			fi
+		fi
 		count=$((count + 1))
 		printf '%s\n' "$name" >> "$STAGE/uploaded.names"; echo "Uploaded $name to $tag ($count/$MAX_ASSETS_PER_RELEASE)"
 	done
