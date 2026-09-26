@@ -13,6 +13,12 @@ termux_step_pre_configure() {
 	autoreconf -fi
 }
 
+termux_step_make() {
+	# The test programs link against the installed library, which is
+	# not available when building it for the first time.
+	make -j $TERMUX_PKG_MAKE_PROCESSES libargp.la
+}
+
 termux_step_post_make_install() {
 	install -Dm600 $TERMUX_PKG_SRCDIR/argp.h $TERMUX_PREFIX/include
 }
