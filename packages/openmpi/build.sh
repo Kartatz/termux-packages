@@ -27,5 +27,13 @@ termux_step_pre_configure () {
 		LDFLAGS+=" -latomic"
 	fi
 
+	# The GNU linker does not follow the runpath of the libraries it
+	# links against, so give it the internal library directories
+	# explicitly to resolve the private dependencies with.
+	local _lib
+	for _lib in opal ompi orte; do
+		LDFLAGS+=" -Wl,-rpath-link,${TERMUX_PKG_BUILDDIR}/${_lib}/.libs"
+	done
+
 	./autogen.pl --force
 }
