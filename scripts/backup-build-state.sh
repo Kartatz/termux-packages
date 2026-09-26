@@ -44,6 +44,12 @@ backup() {
 			fi
 		fi
 		local out
+		tag="$(gh api "repos/$REPO/releases?per_page=100" \
+			--jq "[.[] | select((.assets | length) < $MAX_ASSETS_PER_RELEASE)] | sort_by(.created_at) | reverse | first | .tag_name // empty")"
+		if [ -n "$tag" ]; then
+			echo "$tag"
+			return 0
+		fi
 		while :; do
 			local new_tag
 			new_tag="$(date +%Y%m%d-%H%M%S)"
