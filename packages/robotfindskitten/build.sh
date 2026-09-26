@@ -29,10 +29,10 @@ termux_step_post_get_source() {
 	if [[ "${s}" != "${TERMUX_PKG_SHA256}  "* ]]; then
 		termux_error_exit "Checksum mismatch for source files."
 	fi
-}
 
-termux_step_pre_configure() {
-	LDFLAGS+=" -lncursesw"
+	# The implicit make rule links the libraries before the source, so
+	# --as-needed drops them.
+	sed -i 's|^robotfindskitten: robotfindskitten.c$|robotfindskitten: robotfindskitten.c\n\t$(CC) $(CFLAGS) $(CPPFLAGS) robotfindskitten.c $(LDFLAGS) -lncursesw -o $@|' Makefile
 }
 
 termux_step_make_install() {
