@@ -64,6 +64,18 @@ termux_step_post_get_source() {
 	done
 	grep -lrw usr/include/c++/v1 -e 'include <version>' | xargs -n 1 sed -i 's/include <version>/include \"version\"/g'
 	popd
+
+	# The headers ship with Clang-only constructs, and the ones bundled
+	# in the GCC cross toolchain are patched for compatibility. Install
+	# the same patches here so that the prefix copies do not shadow the
+	# toolchain ones with the unpatched versions.
+	local _gcc_compat_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
+	if [ ! -f "${_gcc_compat_patch}" ]; then
+		termux_download \
+			"https://raw.githubusercontent.com/AmanoTeam/android-gcc-cross/refs/heads/master/patches/0001-Termux-patches.patch" \
+			"${_gcc_compat_patch}"
+	fi
+	patch --silent -p1 -d toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include < "${_gcc_compat_patch}"
 }
 
 termux_step_make_install() {
