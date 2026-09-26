@@ -155,6 +155,16 @@ PY
 	# the read-only lowerdir (NDK), which the overlay would not pick up.
 	ANDROID_HOME= ANDROID_SDK_ROOT= ANDROID_NDK_HOME= ANDROID_NDK_ROOT= NDK_HOME= \
 		ANDROID_NDK="${TERMUX_STANDALONE_TOOLCHAIN}" "${_gcc_cross_dir}/bin/ndk-patch"
+
+	# The ndk-sysroot package installs the unpatched Clang-flavored bionic
+	# headers into the prefix, and since the prefix include directories are
+	# searched before the toolchain ones, they would shadow the
+	# GCC-compatible headers bundled with the toolchain. Remove the
+	# duplicated ones from the prefix so that the toolchain copies win.
+	local _dup_header
+	while IFS= read -r -d '' _dup_header; do
+		rm -f "${TERMUX__PREFIX__INCLUDE_DIR}/${_dup_header}"
+	done < <(cd "${_gcc_cross_dir}/include" && find . -type f -name "*.h" -print0 | sed -z "s|^\\./||")
 }
 
 termux_setup_toolchain_30() {
