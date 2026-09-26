@@ -18,6 +18,10 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS='
 -DCHECK_VALGRIND=OFF
 '
 
+termux_step_pre_configure() {
+	sed -i 's/if(DPKG AND GZIP AND STRIP AND FAKEROOT)/if(FALSE)/' CMakeLists.txt
+}
+
 termux_step_post_get_source() {
 	echo "Applying hardcode-version.diff"
 	sed \
