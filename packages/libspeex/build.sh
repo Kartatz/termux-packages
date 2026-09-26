@@ -1,5 +1,6 @@
 TERMUX_PKG_HOMEPAGE=https://www.speex.org/
 TERMUX_PKG_DESCRIPTION="A patent-free, Open Source/Free Software voice codec"
+TERMUX_PKG_DEPENDS="speexdsp"
 TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=1.2.1
