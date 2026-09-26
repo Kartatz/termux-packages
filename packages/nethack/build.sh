@@ -21,6 +21,7 @@ termux_step_host_build() {
 	else
 		HOST_CC="gcc"
 	fi
+	HOST_CC="$HOST_CC -std=gnu89 -Wno-error=implicit-function-declaration"
 	CFLAGS="" CC="$HOST_CC" LD="ld" make makedefs
 	CFLAGS="" CC="$HOST_CC" LD="ld" make lev_comp
 	CFLAGS="" CC="$HOST_CC" LD="ld" make dgn_comp dlb recover
