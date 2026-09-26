@@ -12,3 +12,10 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 -DNETLIB=ON
 "
+
+termux_step_post_get_source() {
+	# The bundled Android workarounds re-open namespace std to declare
+	# stod() and friends, which libstdc++ already provides.
+	sed -i 's|#ifdef __ANDROID__|#if defined(__ANDROID__) \&\& !defined(__GLIBCXX__)|' \
+		"$TERMUX_PKG_SRCDIR/src/clpp11.hpp"
+}
