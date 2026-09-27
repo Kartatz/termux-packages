@@ -17,5 +17,5 @@ termux_step_post_get_source() {
 }
 
 termux_step_pre_configure() {
-	CFLAGS+=" $CPPFLAGS -fcommon"
+	CFLAGS+=" $CPPFLAGS -fcommon -I$TERMUX_PREFIX/include/bsd"
 }
