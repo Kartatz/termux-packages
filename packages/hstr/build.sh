@@ -14,3 +14,9 @@ ac_cv_file__tmp_hstr_ms_wsl=no
 termux_step_pre_configure() {
 	autoreconf -fi
 }
+
+termux_step_post_make_install() {
+	# The install creates hh as a hard link to hstr.
+	rm -f $TERMUX_PREFIX/bin/hh
+	cp -f $TERMUX_PREFIX/bin/hstr $TERMUX_PREFIX/bin/hh
+}
