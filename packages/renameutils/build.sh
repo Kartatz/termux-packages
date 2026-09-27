@@ -4,10 +4,10 @@ TERMUX_PKG_LICENSE="GPL-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
 TERMUX_PKG_VERSION=0.12.0
 TERMUX_PKG_REVISION=3
-TERMUX_PKG_SRCURL=https://savannah.nongnu.org/download/renameutils/renameutils-$TERMUX_PKG_VERSION.tar.gz
+TERMUX_PKG_SRCURL=https://web.archive.org/web/2023id_/https://download.savannah.gnu.org/releases/renameutils/renameutils-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=cbd2f002027ccf5a923135c3f529c6d17fabbca7d85506a394ca37694a9eb4a3
 TERMUX_PKG_DEPENDS="libandroid-wordexp, readline"
 
 termux_step_pre_configure() {
-	LDFLAGS+=" -landroid-wordexp"
+	export LIBS+=" -landroid-wordexp"
 }
