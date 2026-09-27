@@ -325,8 +325,11 @@ termux_setup_toolchain_30() {
 
 	export CXXFLAGS="$CFLAGS"
 	# set the proper header include order - first package includes, then prefix includes
-	# -isystem${TERMUX__PREFIX__BASE_INCLUDE_DIR}/c++/v1 is needed here for on-device building to work correctly
-	export CPPFLAGS+=" -isystem${TERMUX__PREFIX__BASE_INCLUDE_DIR}/c++/v1 -isystem${TERMUX__PREFIX__INCLUDE_DIR}"
+	# The Clang libc++ headers are not consumable by GCC (they reject it
+	# in C++03 mode, and the toolchain provides its own C++ standard
+	# library headers), so they must not be placed on the include path
+	# ahead of them.
+	export CPPFLAGS+=" -isystem${TERMUX__PREFIX__INCLUDE_DIR}"
 	if [ "$TERMUX_ARCH" != "$TERMUX_REAL_ARCH" ]; then
 		export CPPFLAGS+=" -isystem${TERMUX__PREFIX__BASE_INCLUDE_DIR}"
 	fi
