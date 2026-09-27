@@ -10,6 +10,11 @@ TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="libandroid-support, ncurses, readline"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--mandir=$TERMUX_PREFIX/share/man"
 
+termux_step_post_get_source() {
+	# BOOL_MAX is defined by the GCC-provided limits.h.
+	sed -i -E 's/\bBOOL_MAX\b/BOOL_OPTS_MAX/g' *.c *.h
+}
+
 termux_step_pre_configure() {
 	aclocal
 	automake --add-missing
