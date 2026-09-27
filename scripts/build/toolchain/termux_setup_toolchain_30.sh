@@ -450,19 +450,7 @@ termux_setup_toolchain_30() {
 		#!/bin/sh
 		export PKG_CONFIG_DIR=
 		export PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR
-		# Downgrade the -I flag of the prefix include directory to -isystem:
-		# the plain flag would make the unpatched bionic headers of the prefix
-		# take precedence over the ones of the toolchain, which are the ones
-		# adjusted for GCC.
-		# The output is post-processed through a temporary file so that the
-		# exit status of pkg-config is preserved: a pipeline would always
-		# return the status of sed, making failures look like successes.
-		_out_file=\$(mktemp) || exit 1
-		$_HOST_PKGCONFIG "\$@" > "\$_out_file"
-		_status=\$?
-		sed "s|-I$TERMUX_PREFIX/include |-isystem$TERMUX_PREFIX/include |g; s|-I$TERMUX_PREFIX/include\$|-isystem$TERMUX_PREFIX/include|g" "\$_out_file"
-		rm -f "\$_out_file"
-		exit \$_status
+		exec $_HOST_PKGCONFIG "\$@"
 	HERE
 	chmod +x "$TERMUX_STANDALONE_TOOLCHAIN"/bin/pkg-config
 
