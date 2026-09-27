@@ -17,7 +17,7 @@ Documentation is also being disabled. The package is not going to be installed.
  
  Judy1Tables.c: Judy1TablesGen.c
 -	$(CC) $(INCLUDES) $(AM_CFLAGS) @CFLAGS@ -o Judy1TablesGen Judy1TablesGen.c; ./Judy1TablesGen
-+	clang $(INCLUDES) $(AM_CFLAGS) @JU_64BIT@ -o Judy1TablesGen Judy1TablesGen.c; ./Judy1TablesGen
++	gcc $(INCLUDES) $(AM_CFLAGS) @JU_64BIT@ -o Judy1TablesGen Judy1TablesGen.c; ./Judy1TablesGen
  
  Judy1ByCount.c:../JudyCommon/JudyByCount.c
  	cp -f ../JudyCommon/JudyByCount.c      		Judy1ByCount.c   
@@ -27,7 +27,7 @@ Documentation is also being disabled. The package is not going to be installed.
  
  JudyLTables.c: JudyLTablesGen.c
 -	$(CC) $(INCLUDES) $(AM_CFLAGS) @CFLAGS@ -o JudyLTablesGen JudyLTablesGen.c; ./JudyLTablesGen 
-+	clang $(INCLUDES) $(AM_CFLAGS) @JU_64BIT@ -o JudyLTablesGen JudyLTablesGen.c; ./JudyLTablesGen
++	gcc $(INCLUDES) $(AM_CFLAGS) @JU_64BIT@ -o JudyLTablesGen JudyLTablesGen.c; ./JudyLTablesGen
  
  JudyLByCount.c:   ../JudyCommon/JudyByCount.c
  	cp -f ../JudyCommon/JudyByCount.c      		JudyLByCount.c   
