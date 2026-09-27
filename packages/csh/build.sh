@@ -14,7 +14,7 @@ termux_step_post_get_source() {
 }
 
 termux_step_pre_configure() {
-	CFLAGS="${CFLAGS/-Oz/-Os}"
+	CFLAGS="${CFLAGS/-Oz/-Os} -D_GNU_SOURCE"
 	LDFLAGS+=" -Wl,-z,muldefs"
 }
 
