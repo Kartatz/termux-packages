@@ -14,4 +14,8 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 
 termux_step_pre_configure() {
 	export CFLAGS+=" -Dindex=strchr -Drindex=strrchr -D__STDC_FORMAT_MACROS=1"
+	# The bundled copy does not share the uapi include guard with the
+	# kernel header, so both copies end up included and their
+	# nfnetlink_groups enumerations clash.
+	rm -f include/linux/netfilter/nfnetlink.h
 }
