@@ -28,10 +28,12 @@ termux_step_pre_configure() {
 
 termux_step_post_configure() {
 	find . -name Makefile -print0 | xargs -0 -n 1 sed -i \
-		-e 's:@EXTRALIBS@::g' \
+		-e 's:@EXTRALIBS@:-lm:g' \
 		-e 's:@MINGW32@:no:g' \
 		-e 's:@PICFLAG@:-fPIC:g' \
 		-e 's:@install_suffix@::g' \
 		-e 's:@rdynamic@:-rdynamic:g' \
-		-e 's:@shared@:-shared:g'
+		-e 's:@shared@:-shared:g' \
+		-e 's:$(TGTLDFLAGS):$(TGTLDFLAGS) -lm:g' \
+		-e 's:SYSTEM_VPI_LDFLAGS = :SYSTEM_VPI_LDFLAGS = -lm :g'
 }
