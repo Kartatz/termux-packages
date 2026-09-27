@@ -37,5 +37,5 @@ termux_step_pre_configure() {
 	export CXXFLAGS+=" -fPIC -I$TERMUX_PREFIX/include/ndk_compat -fPIC"
 	export TERMUX_PKG_EXTRA_MAKE_ARGS+=" all static dynamic libcryptopp.pc CC=$CC CXX=$CXX"
 	export CFLAGS+=" -I$TERMUX_PREFIX/include/ndk_compat"
-	export LDFLAGS+=" -l:libndk_compat.a"
+	export LDLIBS+=" -l:libndk_compat.a"
 }
