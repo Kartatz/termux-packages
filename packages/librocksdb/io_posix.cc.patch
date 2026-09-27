@@ -1,0 +1,12 @@
+--- a/env/io_posix.cc
++++ b/env/io_posix.cc
+@@ -30,6 +30,9 @@
+ #include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
++#ifdef OS_ANDROID
++#include <sys/vfs.h>
++#endif
+ #ifdef OS_LINUX
+ #include <sys/statfs.h>
+ #include <sys/sysmacros.h>
