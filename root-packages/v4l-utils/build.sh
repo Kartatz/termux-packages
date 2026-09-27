@@ -37,6 +37,20 @@ termux_step_pre_configure() {
 	LDFLAGS+=" -L${_lib} -l:libgetsubopt.a"
 }
 
+termux_step_post_configure() {
+	local _d="$TERMUX_PKG_BUILDDIR/utils/v4l2-tracer"
+	mkdir -p "${_d}"
+	(
+		cd "${_d}"
+		perl "$TERMUX_PKG_SRCDIR/utils/v4l2-tracer/v4l2-tracer-gen.pl" \
+			"$TERMUX_PKG_SRCDIR/include/linux/v4l2-controls.h" \
+			"$TERMUX_PKG_SRCDIR/include/linux/videodev2.h" \
+			"$TERMUX_PKG_SRCDIR/include/linux/media.h" \
+			"$TERMUX_PKG_SRCDIR/include/linux/v4l2-common.h"
+		touch gen.intermediate
+	)
+}
+
 termux_step_make_install() {
 	make -C utils install
 	make -C contrib install
