@@ -53,7 +53,7 @@ termux_step_pre_configure() {
 	sed -i 's,@HOSTBUILD@,'"$TERMUX_PKG_HOSTBUILD_DIR"',' "$TERMUX_PKG_SRCDIR/man/Makefile.am"
 	CFLAGS+=" -DNO_INLINE_GETPASS=1"
 	CPPFLAGS+=" -DNO_INLINE_GETPASS=1 -DLOGIN_PROCESS=6 -DDEAD_PROCESS=8 -DLOG_NFACILITIES=24 -fcommon"
-	LDFLAGS+=" -llog"
+	export LIBS+=" -llog"
 	touch -d "next hour" ./man/whois.1
 }
 
