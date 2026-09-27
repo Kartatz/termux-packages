@@ -11,6 +11,12 @@ TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 TERMUX_PKG_DEPENDS="libinih, ncurses"
 TERMUX_PKG_BUILD_IN_SRC=true
 
+termux_step_pre_configure() {
+	sed -i -e 's/ -lncurses -linih$//' \
+		-e 's/-o \$@ \$(OBJECTS)$/-o $@ $(OBJECTS) -lncurses -linih/' \
+		Makefile
+}
+
 termux_step_make_install() {
 	install -Dm700 -t $TERMUX_PREFIX/bin bin/pomodoro_curses
 	install -Dm600 -t $TERMUX_PREFIX/share/man/man1 doc/pomodoro_curses.1
