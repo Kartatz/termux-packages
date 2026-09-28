@@ -18,8 +18,9 @@ termux_step_pre_configure() {
 		return
 	fi
 
-	# The man page generation runs lowdown through proot with the
-	# minimal AOSP environment, whose libc does not provide the symbols
-	# used by our builds. Skip it instead of fighting the loader.
-	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DLOWDOWN_EXECUTABLE=LOWDOWN_EXECUTABLE-NOTFOUND"
+	# The man page generator must run on the host. Use the Ubuntu
+	# package instead of the cross-built lowdown, which cannot run
+	# through proot with the minimal AOSP environment.
+	termux_download_ubuntu_packages lowdown
+	PATH="${TERMUX_PKG_HOSTBUILD_DIR}/ubuntu_packages/usr/bin:$PATH"
 }
