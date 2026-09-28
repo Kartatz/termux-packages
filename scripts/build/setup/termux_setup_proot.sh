@@ -2,7 +2,6 @@
 # This provides an utility to run binaries under termux environment via proot.
 termux_setup_proot() {
 	local TERMUX_PROOT_VERSION=5.3.0
-	local TERMUX_QEMU_VERSION=7.2.0-1
 	local TERMUX_PROOT_BIN="$TERMUX_COMMON_CACHEDIR/proot-bin-$TERMUX_ARCH"
 	local TERMUX_PROOT_QEMU=""
 	local TERMUX_PROOT_BIN_NAME="termux-proot-run"
@@ -23,16 +22,30 @@ termux_setup_proot() {
 		d1eb20cb201e6df08d707023efb000623ff7c10d6574839d7bb42d0adba6b4da
 	chmod +x "$TERMUX_PROOT_BIN"/proot
 
-	declare -A checksums=(
-		["aarch64"]="dce64b2dc6b005485c7aa735a7ea39cb0006bf7e5badc28b324b2cd0c73d883f"
-		["arm"]="9f07762a3cd0f8a199cb5471a92402a4765f8e2fcb7fe91a87ee75da9616a806"
-	)
 	if [[ "$TERMUX_ARCH" == "aarch64" ]] || [[ "$TERMUX_ARCH" == "arm" ]]; then
-		termux_download https://github.com/multiarch/qemu-user-static/releases/download/v"$TERMUX_QEMU_VERSION"/qemu-"${TERMUX_ARCH/i686/i386}"-static \
-			"$TERMUX_PROOT_BIN"/qemu-"$TERMUX_ARCH" \
-			"${checksums[$TERMUX_ARCH]}"
+		# The multiarch release is based on QEMU 7.2, whose TCG crashes
+		# on the multi-threaded external interpreter of GHC with an
+		# assertion in cpu_exec. The current Ubuntu release dropped the
+		# statically linked package, so use the last LTS that has it.
+		UBUNTU_RELEASE=noble DESTINATION="$TERMUX_PROOT_BIN" \
+			termux_download_ubuntu_packages qemu-user-static
+		mv "$TERMUX_PROOT_BIN"/usr/bin/qemu-"${TERMUX_ARCH/i686/i386}"-static \
+			"$TERMUX_PROOT_BIN"/qemu-"$TERMUX_ARCH"
+		rm -Rf "$TERMUX_PROOT_BIN"/usr
 		chmod +x "$TERMUX_PROOT_BIN"/qemu-"$TERMUX_ARCH"
 		TERMUX_PROOT_QEMU="-q $TERMUX_PROOT_BIN/qemu-$TERMUX_ARCH"
+	fi
+
+	# The binaries run through proot link against the GCC runtime, whose
+	# libssp.so is only available in the toolchain directory. Expose it
+	# alone through a dedicated search path: the toolchain directory also
+	# holds the linker stubs of bionic, which must not shadow the real
+	# system libraries.
+	local _gcc_lib_ssp=""
+	_gcc_lib_ssp="$(find "${TERMUX_COMMON_CACHEDIR}/android-gcc-cross" -maxdepth 3 -path "*android${TERMUX_PKG_API_LEVEL}/lib/libssp.so" -print -quit 2>/dev/null | head -n1)"
+	if [ -n "${_gcc_lib_ssp}" ]; then
+		mkdir -p "$TERMUX_PROOT_BIN/lib"
+		ln -sf "${_gcc_lib_ssp}" "$TERMUX_PROOT_BIN/lib/libssp.so"
 	fi
 
 	# NOTE: We include current PATH too so that host binaries also become available under proot.
@@ -47,6 +60,7 @@ termux_setup_proot() {
 			PREFIX=$TERMUX_PREFIX \
 			TERM=$TERM \
 			TZ=UTC \
+			LD_LIBRARY_PATH="$TERMUX_PROOT_BIN/lib:$TERMUX_PREFIX/lib" \
 			$TERMUX_PROOT_EXTRA_ENV_VARS \
 			$TERMUX_PROOT_BIN/proot $TERMUX_PROOT_QEMU -R / "\$@"
 	EOF
