@@ -18,6 +18,11 @@ termux_step_pre_configure() {
 		return
 	fi
 
+	# The lowdown helper runs under proot with an empty environment, so
+	# it would not find libssp.so, which the GCC-built binaries link
+	# against, without an explicit library search path.
+	TERMUX_PROOT_EXTRA_ENV_VARS="LD_LIBRARY_PATH=$(dirname "$(find "${TERMUX_COMMON_CACHEDIR}/android-gcc-cross" -maxdepth 3 -path "*android${TERMUX_PKG_API_LEVEL}/lib/libssp.so" -print -quit)")"
+
 	termux_setup_proot
 	mkdir "${TERMUX_PKG_TMPDIR}/bin"
 	printf '%s\ntermux-proot-run %s "$@"\n' \
