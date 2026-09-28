@@ -50,7 +50,15 @@ termux_patch_ndk_with_gcc_cross() {
 		# A host PATH is required: the build environment puts the
 		# toolchain first in PATH, where there is no cc for make.
 		env PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
-			bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
+			# The bundled libssp.so ships without a SONAME, so the dynamic
+		# loader cannot register it under the name every GCC-built library
+		# and binary references it with, and rejects their verneed.
+		local _libssp
+		while IFS= read -r -d '' _libssp; do
+			patchelf --set-soname libssp.so "${_libssp}" 2>/dev/null || true
+		done < <(find "${_gcc_cross_dir}" -type f -name libssp.so -print0)
+
+		bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
 		# Define O_BINARY and O_TEXT like Gnulib does, since the GNU
 		# tools expect them to exist when wrapping <fcntl.h>: unlike
 		# Clang, the toolchain's include directories come first, so
