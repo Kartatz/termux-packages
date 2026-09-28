@@ -18,20 +18,8 @@ termux_step_pre_configure() {
 		return
 	fi
 
-	# The lowdown helper runs under proot with an empty environment, so
-	# it would not find libssp.so, which the GCC-built binaries link
-	# against, without an explicit library search path.
-	TERMUX_PROOT_EXTRA_ENV_VARS="LD_LIBRARY_PATH=$(dirname "$(find "${TERMUX_COMMON_CACHEDIR}/android-gcc-cross" -maxdepth 3 -path "*android${TERMUX_PKG_API_LEVEL}/lib/libssp.so" -print -quit)")"
-
-	termux_setup_proot
-	mkdir "${TERMUX_PKG_TMPDIR}/bin"
-	printf '%s\ntermux-proot-run %s "$@"\n' \
-		"#!/bin/sh" \
-		"${TERMUX_PREFIX}/bin/lowdown" \
-	> "${TERMUX_PKG_TMPDIR}/bin/lowdown"
-	chmod +x "${TERMUX_PKG_TMPDIR}/bin/lowdown"
-
-	PATH="${TERMUX_PKG_TMPDIR}/bin:$PATH"
-
-	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DLOWDOWN_EXECUTABLE=${TERMUX_PKG_TMPDIR}/bin/lowdown"
+	# The man page generation runs lowdown through proot with the
+	# minimal AOSP environment, whose libc does not provide the symbols
+	# used by our builds. Skip it instead of fighting the loader.
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DLOWDOWN_EXECUTABLE=LOWDOWN_EXECUTABLE-NOTFOUND"
 }
