@@ -27,6 +27,15 @@ termux_step_configure() {
 	# Prevent spamming logs with useless warnings to make them more readable.
 	CFLAGS+=" -Wno-ignored-optimization-argument -Wno-unused-command-line-argument"
 
+	# The build system sometimes compiles into files whose base name is
+	# test.o, which the GCC wrappers mistake for the initial CMake
+	# compiler detection and then define the Clang version macros for.
+	# libbb.h then expects out-of-line definitions from
+	# libbb/const_hack.c, which is compiled without the macros on its
+	# turn. Keep the Clang macros defined for the whole build instead,
+	# like the Clang toolchain they were written for.
+	CFLAGS+=" -D__clang__=1 -D__clang_major__=21"
+
 	sed -e "s|@TERMUX_PREFIX@|$TERMUX_PREFIX|g" \
 		-e "s|@TERMUX_SYSROOT@|$TERMUX_STANDALONE_TOOLCHAIN/sysroot|g" \
 		-e "s|@TERMUX_HOST_PLATFORM@|${TERMUX_HOST_PLATFORM}|g" \
