@@ -14,6 +14,9 @@ TERMUX_PKG_GROUPS="base-devel"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="ac_cv_lib_elf_elf_begin=no"
 # Prevent linking against libiconv:
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" am_cv_func_iconv=no"
+# bionic provides getloadavg() from API level 29 only, but the AOSP
+# runtime used for running target binaries under proot is older:
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" ac_cv_func_getloadavg=no ac_cv_lib_util_getloadavg=no"
 
 TERMUX_PKG_CONFLICTS="make-guile"
 # Prevent linking against guile:
