@@ -13,6 +13,7 @@ termux_step_pre_configure() {
 	export OPENSSL_INCLUDE_DIR=$TERMUX_PREFIX/include
 	export OPENSSL_LIB_DIR=$TERMUX_PREFIX/lib
 	termux_setup_rust
+	unset PINO_OPT_LEVEL
 }
 
 termux_step_make() {
