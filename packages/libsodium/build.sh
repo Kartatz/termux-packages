@@ -28,4 +28,7 @@ termux_step_pre_configure() {
 	if [ "$TERMUX_ARCH" = "aarch64" ]; then
 		export CFLAGS_ARMCRYPTO="-march=armv8-a+crypto+aes"
 	fi
+
+	# bionic provides memset_explicit from API level 35 only.
+	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" ac_cv_func_memset_explicit=no"
 }
