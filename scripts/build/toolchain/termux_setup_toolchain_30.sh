@@ -71,6 +71,13 @@ termux_patch_ndk_with_gcc_cross() {
 		touch "${_gcc_cross_stamp}"
 	fi
 	rm -Rf "${_gcc_cross_dir}/include/zlib.h" "${_gcc_cross_dir}/include/zconf.h"
+	# The bionic headers installed by the ndk-sysroot package map the
+	# C11 atomics onto the __c11 builtins, which are Clang-only. They
+	# shadow the GCC-internal stdatomic.h through the prefix include
+	# dir, so drop them and let the compiler use its own, which routes
+	# them onto the __atomic builtins instead.
+	rm -Rf "${TERMUX__PREFIX__INCLUDE_DIR}"/stdatomic.h \
+		"${TERMUX__PREFIX__INCLUDE_DIR}"/bits/stdatomic.h
 	rm -Rf "${_gcc_cross_dir}"/lib/libz.a "${_gcc_cross_dir}"/lib/libz.so \
 		"${_gcc_cross_dir}"/lib/nouzen/libz.a "${_gcc_cross_dir}"/lib/nouzen/libz.so
 	rm -Rf "${_gcc_cross_dir}"/*/lib/libz.a "${_gcc_cross_dir}"/*/lib/libz.so \
