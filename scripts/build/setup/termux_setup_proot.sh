@@ -45,7 +45,7 @@ termux_setup_proot() {
 	_gcc_lib="$(find "${TERMUX_COMMON_CACHEDIR}/android-gcc-cross" -maxdepth 3 -path "*android${TERMUX_PKG_API_LEVEL}/lib" -print -quit 2>/dev/null | head -n1)"
 	if [ -n "${_gcc_lib}" ]; then
 		mkdir -p "$TERMUX_PROOT_BIN/lib"
-		for _gcc_runtime_lib in libssp.so libestdc++.so libgcc_s.so; do
+		for _gcc_runtime_lib in libssp.so libestdc++.so libgcc_s.so libegcc.so; do
 			[ -f "${_gcc_lib}/${_gcc_runtime_lib}" ] && \
 				ln -sf "${_gcc_lib}/${_gcc_runtime_lib}" "$TERMUX_PROOT_BIN/lib/${_gcc_runtime_lib}"
 		done
