@@ -16,6 +16,7 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --with-openssl
 --without-brotli
 --without-zstd
+--disable-backtrace
 "
 
 TERMUX_PKG_MAKE_PROCESSES=1
