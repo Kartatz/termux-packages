@@ -13,4 +13,14 @@ TERMUX_PKG_UPDATE_VERSION_REGEXP="\d+\.\d+"
 
 termux_step_pre_configure() {
 	sed -i "s/@VERSION@/${TERMUX_PKG_VERSION}/g" $TERMUX_PKG_SRCDIR/Makefile
+	# The bionic headers map the C11 atomics onto the __c11 builtins,
+	# which GCC only folds under C11 or newer.
+	sed -i "s/-std=gnu99/-std=gnu11/" $TERMUX_PKG_SRCDIR/Makefile
+}
+
+termux_step_post_configure() {
+	# The atomic helpers of larger objects end up as calls into
+	# libatomic, which must be linked after the objects for --as-needed.
+	sed -i "s/^LIBS	+= -lm \$(EXTLIBS)/LIBS	+= -lm -latomic \$(EXTLIBS)/" \
+		$TERMUX_PKG_BUILDDIR/Makefile
 }
