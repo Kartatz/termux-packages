@@ -58,7 +58,10 @@ termux_patch_ndk_with_gcc_cross() {
 			patchelf --set-soname libssp.so "${_libssp}" 2>/dev/null || true
 		done < <(find "${_gcc_cross_dir}" -type f -name libssp.so -print0)
 
-		bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
+		# The build environment exports a cross CC, which would override
+		# the makefile default and build the wrapper as an Android binary.
+		env -i PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+			HOME="${HOME:-/home/builder}" bash "${_gcc_cross_dir}/bin/update-wrapper" >/dev/null 2>&1
 		# Define O_BINARY and O_TEXT like Gnulib does, since the GNU
 		# tools expect them to exist when wrapping <fcntl.h>: unlike
 		# Clang, the toolchain's include directories come first, so
