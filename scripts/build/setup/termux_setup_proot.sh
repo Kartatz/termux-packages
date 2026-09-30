@@ -62,7 +62,9 @@ termux_setup_proot() {
 			TZ=UTC \
 			LD_LIBRARY_PATH="$TERMUX_PROOT_BIN/lib:$TERMUX_PREFIX/lib" \
 			$TERMUX_PROOT_EXTRA_ENV_VARS \
-			$TERMUX_PROOT_BIN/proot $TERMUX_PROOT_QEMU -R / "\$@"
+			$TERMUX_PROOT_BIN/proot $TERMUX_PROOT_QEMU -R / \
+			-b "$TERMUX_PREFIX/opt/aosp:/system" \
+			"\$@"
 	EOF
 	chmod +x "$TERMUX_PROOT_BIN/$TERMUX_PROOT_BIN_NAME"
 }
