@@ -17,7 +17,7 @@ termux_step_pre_configure() {
 
 	if [[ "$TERMUX_ON_DEVICE_BUILD" == "false" ]]; then
 		termux_setup_proot
-		termux_proot_run=(termux-proot-run env LD_PRELOAD= LD_LIBRARY_PATH=)
+		termux_proot_run=(termux-proot-run env LD_PRELOAD=)
 	fi
 }
 
