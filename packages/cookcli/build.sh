@@ -13,6 +13,7 @@ TERMUX_PKG_AUTO_UPDATE=true
 termux_step_pre_configure() {
 	termux_setup_nodejs
 	termux_setup_rust
+	unset PINO_OPT_LEVEL
 
 	# i686: __atomic_load
 	if [[ "${TERMUX_ARCH}" == "i686" ]]; then
