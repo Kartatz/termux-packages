@@ -15,6 +15,9 @@ termux_step_pre_configure() {
 	termux_setup_rust
 	export CARGO_BUILD_TARGET=$CARGO_TARGET_NAME
 	export OPENSSL_DIR=$TERMUX_PREFIX
+	# bionic provides memset_explicit from API level 35 only, and the
+	# vendored libsodium configure picks it up from the toolchain headers.
+	export ac_cv_func_memset_explicit=no
 
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DRust_CARGO_TARGET=$CARGO_TARGET_NAME"
 }
