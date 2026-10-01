@@ -1,6 +1,6 @@
 termux_patch_ndk_with_gcc_cross() {
 	local _gcc_cross_dir="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross"
-	local _gcc_cross_stamp="${_gcc_cross_dir}/.termux-patches-applied-v5"
+	local _gcc_cross_stamp="${_gcc_cross_dir}/.termux-patches-applied-v6"
 	if [ ! -x "${_gcc_cross_dir}/bin/ndk-patch" ] || [ ! -f "${_gcc_cross_stamp}" ]; then
 		local _gcc_cross_tar="${_gcc_cross_dir}.tar.xz"
 		local _gcc_cross_patch="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-0001-Termux-patches.patch"
@@ -58,6 +58,26 @@ termux_patch_ndk_with_gcc_cross() {
 		while IFS= read -r -d '' _libssp; do
 			patchelf --set-soname libssp.so "${_libssp}" 2>/dev/null || true
 		done < <(find "${_gcc_cross_dir}" -type f -name libssp.so -print0)
+		# The CRT objects shipped in the tarball are built with -fpic, so
+		# their small-model GOT references overflow when linking very
+		# large binaries. Rebuild them with -fPIC from bionic.
+		local _crt_repo="${TERMUX_COMMON_CACHEDIR}/android-gcc-cross-repo"
+		local _bionic_dir="${TERMUX_COMMON_CACHEDIR}/bionic"
+		local _crt_triplet
+		case "${TERMUX_ARCH}" in
+			aarch64) _crt_triplet=aarch64-unknown-linux-android ;;
+			arm) _crt_triplet=armv7-unknown-linux-androideabi ;;
+			i686) _crt_triplet=i686-unknown-linux-android ;;
+			x86_64) _crt_triplet=x86_64-unknown-linux-android ;;
+		esac
+		rm -Rf "${_crt_repo}" "${_bionic_dir}"
+		git clone -q --depth 1 https://github.com/AmanoTeam/android-gcc-cross "${_crt_repo}"
+		git clone -q --depth 1 https://android.googlesource.com/platform/bionic "${_bionic_dir}"
+		PATH="${_gcc_cross_dir}/bin:${PATH}" \
+			make -s -C "${_crt_repo}/tools/crt" \
+			OUT="${_gcc_cross_dir}" BIONIC_DIR="${_bionic_dir}" \
+			ABIS="${_crt_triplet}" >/dev/null 2>&1
+		rm -Rf "${_crt_repo}" "${_bionic_dir}"
 		# Define O_BINARY and O_TEXT like Gnulib does, since the GNU
 		# tools expect them to exist when wrapping <fcntl.h>: unlike
 		# Clang, the toolchain's include directories come first, so
