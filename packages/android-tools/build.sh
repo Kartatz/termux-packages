@@ -17,7 +17,7 @@ termux_step_pre_configure() {
 	termux_setup_protobuf
 	termux_setup_golang
 
-	LDFLAGS+=" $($TERMUX_SCRIPTDIR/packages/libprotobuf/interface_link_libraries.sh)"
+	LDFLAGS+=" -Wl,--no-as-needed $($TERMUX_SCRIPTDIR/packages/libprotobuf/interface_link_libraries.sh) -Wl,--as-needed"
 }
 
 termux_step_post_make_install() {
