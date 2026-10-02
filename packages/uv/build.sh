@@ -11,6 +11,10 @@ TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
 
 termux_step_pre_configure() {
+	# aws-lc-sys compiles jitterentropy with -O0, which the toolchain
+	# wrapper would otherwise override.
+	unset PINO_OPT_LEVEL
+
 	termux_setup_cmake
 	termux_setup_rust
 
