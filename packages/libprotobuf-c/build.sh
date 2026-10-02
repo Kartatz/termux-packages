@@ -31,7 +31,7 @@ termux_step_pre_configure() {
 	termux_setup_protobuf
 	export PROTOC=$(command -v protoc)
 
-	CXXFLAGS+=" -std=c++17"
+	CXXFLAGS+=" -std=c++20"
 	LDFLAGS+=" $($TERMUX_SCRIPTDIR/packages/libprotobuf/interface_link_libraries.sh)"
 }
 
