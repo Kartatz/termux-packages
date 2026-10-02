@@ -12,6 +12,9 @@ TERMUX_PKG_GROUPS="science"
 termux_step_pre_configure() {
 	termux_setup_protobuf
 
+	sed -i 's/PROPERTY CXX_STANDARD 11/PROPERTY CXX_STANDARD 20/' \
+		$TERMUX_PKG_SRCDIR/demo/CMakeLists.txt
+
 	CPPFLAGS+=" -DPROTOBUF_USE_DLLS"
 
 	# the error for 32-bit targets if this is not used looks like this:
