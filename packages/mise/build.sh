@@ -14,6 +14,9 @@ TERMUX_PKG_UPDATE_TAG_TYPE=latest-release-tag
 termux_step_pre_configure() {
 	termux_setup_cmake
 	termux_setup_rust
+	# The aws-lc-sys build script compiles its jitterentropy copy with -O0,
+	# which its sources reject under a forced optimization level.
+	unset PINO_OPT_LEVEL
 
 	# Dummy CMake toolchain file to workaround build error:
 	# error: failed to run custom build command for `libz-ng-sys v1.1.29`
