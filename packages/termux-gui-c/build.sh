@@ -13,4 +13,7 @@ TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 termux_step_pre_configure() {
 	termux_setup_protobuf
 	export SHARED_BUILD=1
+
+	sed -i 's/set(CMAKE_CXX_STANDARD 17)/set(CMAKE_CXX_STANDARD 20)/' \
+		$TERMUX_PKG_SRCDIR/CMakeLists.txt
 }
