@@ -62,7 +62,7 @@ termux_step_host_build() {
 export LEXLIB=
 
 termux_step_pre_configure() {
-	export CPPFLAGS="$CPPFLAGS -Wno-c++11-narrowing"
+	export CPPFLAGS="$CPPFLAGS -Wno-narrowing"
 
 	LIB_PATH="${TERMUX_PREFIX}/lib:/system/lib"
 	if (( TERMUX_ARCH_BITS == 64 )); then
