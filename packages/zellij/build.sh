@@ -17,6 +17,8 @@ termux_step_pre_configure() {
 	termux_setup_ninja
 	termux_setup_rust
 
+	unset PINO_OPT_LEVEL
+
 	cargo install --force --locked bindgen-cli
 	export BINDGEN_EXTRA_CLANG_ARGS="--sysroot ${TERMUX_STANDALONE_TOOLCHAIN}/sysroot"
 	case "${TERMUX_ARCH}" in
