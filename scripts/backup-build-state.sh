@@ -72,7 +72,8 @@ backup() {
 	tag="$(existing_tag="$STATE_FILE" create_release)"
 
 	gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" --clobber >/dev/null
-	count="$(gh api "repos/$REPO/releases/tags/$tag" --jq '.assets | length')"
+	count="$(gh api "repos/$REPO/releases/tags/$tag" --jq '.assets | length' 2>/dev/null)"
+	count="${count:-$MAX_ASSETS_PER_RELEASE}"
 
 	shopt -s nullglob
 	for file in "$REPO_DIR"/output/*.deb; do
@@ -86,11 +87,11 @@ backup() {
 			count=0
 		fi
 		if ! gh release upload "$tag" -R "$REPO" "$file" --clobber >"$STAGE/upload.out" 2>"$STAGE/upload.err"; then
-			if grep -q "file_count limited" "$STAGE/upload.err"; then
+			if grep -q "file_count limited" "$STAGE/upload.out" "$STAGE/upload.err"; then
 				tag="$(create_release)"
 				count=0
 				gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null || exit 1
-			elif grep -qi "rate limit" "$STAGE/upload.err"; then
+			elif grep -qi "rate limit" "$STAGE/upload.out" "$STAGE/upload.err"; then
 				echo "Rate limited, sleeping for 10 minutes..." >&2
 				sleep 600
 				gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null || exit 1
