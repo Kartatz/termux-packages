@@ -33,6 +33,9 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 termux_step_pre_configure() {
 	termux_setup_protobuf
 
+	sed -i 's/set(CMAKE_CXX_STANDARD 17)/set(CMAKE_CXX_STANDARD 20)/' \
+		$TERMUX_PKG_SRCDIR/CMakeLists.txt
+
 	# Use host protoc executable
 	TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" -DProtobuf_PROTOC_EXECUTABLE=$(command -v protoc)"
 	sed -i 's/COMMAND ${PROTOBUF_EXECUTABLE}/COMMAND ${Protobuf_PROTOC_EXECUTABLE}/g' ${TERMUX_PKG_SRCDIR}/c++/src/CMakeLists.txt
