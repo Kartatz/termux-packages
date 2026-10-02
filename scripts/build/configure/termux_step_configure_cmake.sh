@@ -23,6 +23,10 @@ termux_step_configure_cmake() {
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_NAME=Android")
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_SYSTEM_VERSION=$TERMUX_PKG_API_LEVEL")
 			CMAKE_ADDITIONAL_ARGS+=("-DCMAKE_ANDROID_STANDALONE_TOOLCHAIN=$TERMUX_STANDALONE_TOOLCHAIN")
+			# Projects commonly dereference it when building for Android
+			# (e.g. the zstd CMakeLists vendored by mold and libblosc2),
+			# but CMake only defines it through the NDK toolchain file.
+			CMAKE_ADDITIONAL_ARGS+=("-DANDROID_PLATFORM_LEVEL=$TERMUX_PKG_API_LEVEL")
 			# CMake's Android platform otherwise derives the versionless
 			# NDK LLVM triple (e.g. aarch64-none-linux-android) as the
 			# compiler target, which the GCC wrappers do not accept.
