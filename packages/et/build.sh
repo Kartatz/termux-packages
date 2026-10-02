@@ -12,6 +12,11 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="-DDISABLE_VCPKG=1"
 
 termux_step_pre_configure() {
 	termux_setup_protobuf
+
+	sed -i 's/set(CMAKE_CXX_STANDARD 17)/set(CMAKE_CXX_STANDARD 20)/' \
+		$TERMUX_PKG_SRCDIR/CMakeLists.txt
+	perl -0pi -e 's/\.sa_sigaction = (\w+),\s*\n(\s*)\.sa_flags = ([^}]+)\}/.sa_flags = $3,$2.sa_sigaction = $1}/g' \
+		$TERMUX_PKG_SRCDIR/external_imported/sentry-native/external/libunwindstack-ndk/ThreadUnwinder.cpp
 }
 
 termux_step_post_make_install() {
