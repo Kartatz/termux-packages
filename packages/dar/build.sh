@@ -8,7 +8,7 @@ TERMUX_PKG_SHA256=d56caeb6c86f751cb454d8fef45f3daecc508f208290d9f51e8c75bba5dc46
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="attr, libbz2, libc++, libgcrypt, libgpg-error, liblzma, liblzo, zlib, zstd"
 TERMUX_PKG_BUILD_IN_SRC=
-TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--disable-dar-static"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="--disable-dar-static --disable-librhash-linking"
 
 termux_step_pre_configure() {
 	if [ "$TERMUX_ARCH_BITS" = "32" ]; then
