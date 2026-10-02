@@ -12,3 +12,9 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --without-tests
 "
 
+
+termux_step_pre_configure() {
+	# The prefix provides <execinfo.h>, but the libc does not provide
+	# backtrace() at this API level; use the bundled stubs instead.
+	export ac_cv_header_execinfo_h=no
+}
