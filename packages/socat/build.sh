@@ -15,3 +15,11 @@ ac_compiler_gnu=yes
 sc_cv_getprotobynumber_r=
 " # sc_cv_sys_crdly_shift=9 sc_cv_sys_csize_shift=4 sc_cv_sys_tabdly_shift=11"
 TERMUX_PKG_BUILD_IN_SRC=true
+
+# The wrapper disables -Werror by default (PINO_WERROR=false), but the
+# configure type probes depend on it to fail on warnings: without it they
+# fall back to running test programs, which cannot work when cross
+# compiling. socat itself never builds with -Werror.
+termux_step_pre_configure() {
+	export PINO_WERROR=true
+}
