@@ -164,7 +164,8 @@ LIBSSP_1.0 {
 };
 SSPEOF
 		"${_gcc_cross_dir}/bin/clang" --target="${CCTERMUX_HOST_PLATFORM}" \
-			-shared -fPIC -O2 -Wl,--version-script="${_ssp_stage}/ssp.map" \
+			-shared -fPIC -O2 -Wl,-soname,libssp.so \
+			-Wl,--version-script="${_ssp_stage}/ssp.map" \
 			-o "${_ssp_stage}/libssp.so" "${_ssp_stage}/ssp.c"
 		install -m 0644 "${_ssp_stage}/libssp.so" "${_gcc_cross_ssp}"
 		rm -Rf "${_ssp_stage}"
