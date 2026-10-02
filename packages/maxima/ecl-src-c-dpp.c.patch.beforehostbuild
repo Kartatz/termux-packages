@@ -1,0 +1,14 @@
+--- a/ecl/src/c/dpp.c
++++ b/ecl/src/c/dpp.c
+@@ -109,8 +109,10 @@
+ 
+ #ifndef __cplusplus
+ #if ! ( defined(__bool_true_false_are_defined) \
+         &&__bool_true_false_are_defined )
++#if ! ( defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L )
+ typedef int bool;
+ #endif
++#endif
+ #endif
+ 
+ FILE *in, *out;
