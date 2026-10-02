@@ -25,7 +25,10 @@ backup() {
 	tar -C "$STAGE" -cf - build-all | xz -T 0 -6 >"$STAGE/$STATE_FILE"
 
 	local existing_names
-	existing_names="$(gh api --paginate "repos/$REPO/releases" --jq '.[].assets[].name')"
+	if ! existing_names="$(gh api --paginate "repos/$REPO/releases" --jq '.[].assets[].name')"; then
+		echo "ERROR: failed to list the existing release assets, not risking a re-upload of everything" >&2
+		exit 1
+	fi
 
 	asset_exists() {
 		{ printf '%s\n' "$existing_names"; cat "$STAGE/uploaded.names" 2>/dev/null; } | grep -qxF "$1"
@@ -82,10 +85,14 @@ backup() {
 			tag="$(create_release)"
 			count=0
 		fi
-		if ! gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null 2>"$STAGE/upload.err"; then
+		if ! gh release upload "$tag" -R "$REPO" "$file" --clobber >"$STAGE/upload.out" 2>"$STAGE/upload.err"; then
 			if grep -q "file_count limited" "$STAGE/upload.err"; then
 				tag="$(create_release)"
 				count=0
+				gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null || exit 1
+			elif grep -qi "rate limit" "$STAGE/upload.err"; then
+				echo "Rate limited, sleeping for 10 minutes..." >&2
+				sleep 600
 				gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null || exit 1
 			else
 				cat "$STAGE/upload.err"
