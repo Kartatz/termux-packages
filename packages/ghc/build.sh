@@ -77,6 +77,11 @@ termux_step_make() {
 	sed -Ei 's/"(-Qunused-arguments|--target=[a-z0-9]+-unknown-linux-android[0-9]*)"(, ?)?//g; s/\[,( ?)/[\1/g; s/( ?),\]/]/g; s/,+,/ ,/g' \
 		hadrian/cfg/default.target
 
+	# GCC emits -Winline diagnostics where Clang does not implement the
+	# option at all, and the RTS build treats any compiler output on
+	# stderr as a failure.
+	sed -i '/arg "-Winline"/d' hadrian/src/Settings/Packages.hs
+
 	(
 		unset CFLAGS LDFLAGS CPPFLAGS # For hadrian compilation
 
