@@ -13,6 +13,9 @@ TERMUX_PKG_UPDATE_VERSION_REGEXP="lychee-v\d+\.\d+\.\d+"
 
 termux_step_pre_configure() {
 	termux_setup_rust
+	# The aws-lc-sys build script compiles its jitterentropy copy with -O0,
+	# which its sources reject under a forced optimization level.
+	unset PINO_OPT_LEVEL
 
 	: "${CARGO_HOME:=$HOME/.cargo}"
 	export CARGO_HOME
