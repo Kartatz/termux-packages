@@ -47,12 +47,6 @@ backup() {
 			fi
 		fi
 		local out
-		tag="$(gh api "repos/$REPO/releases?per_page=100" \
-			--jq "[.[] | select((.assets | length) < $MAX_ASSETS_PER_RELEASE)] | sort_by(.created_at) | reverse | first | .tag_name // empty")"
-		if [ -n "$tag" ]; then
-			echo "$tag"
-			return 0
-		fi
 		while :; do
 			local new_tag
 			new_tag="$(date +%Y%m%d-%H%M%S)"
@@ -72,8 +66,10 @@ backup() {
 	tag="$(existing_tag="$STATE_FILE" create_release)"
 
 	gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" --clobber >/dev/null
-	count="$(gh api "repos/$REPO/releases/tags/$tag" --jq '.assets | length' 2>/dev/null)"
-	count="${count:-$MAX_ASSETS_PER_RELEASE}"
+	# The GitHub API is flaky about reporting the asset count, so treat the
+	# count as a hint and rely on the upload recovery when it is wrong.
+	count="$(gh api "repos/$REPO/releases/tags/$tag" --jq '.assets | length' 2>/dev/null || echo 0)"
+	count="${count:-0}"
 
 	shopt -s nullglob
 	for file in "$REPO_DIR"/output/*.deb; do
@@ -85,11 +81,13 @@ backup() {
 		if [ "$count" -ge "$MAX_ASSETS_PER_RELEASE" ]; then
 			tag="$(create_release)"
 			count=0
+			gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" --clobber >/dev/null
 		fi
 		if ! gh release upload "$tag" -R "$REPO" "$file" --clobber >"$STAGE/upload.out" 2>"$STAGE/upload.err"; then
 			if grep -q "file_count limited" "$STAGE/upload.out" "$STAGE/upload.err"; then
 				tag="$(create_release)"
 				count=0
+				gh release upload "$tag" -R "$REPO" "$STAGE/$STATE_FILE" --clobber >/dev/null
 				gh release upload "$tag" -R "$REPO" "$file" --clobber >/dev/null || exit 1
 			elif grep -qi "rate limit" "$STAGE/upload.out" "$STAGE/upload.err"; then
 				echo "Rate limited, sleeping for 10 minutes..." >&2
