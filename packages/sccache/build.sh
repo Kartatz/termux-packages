@@ -11,6 +11,9 @@ TERMUX_PKG_AUTO_UPDATE=true
 
 termux_step_make() {
 	termux_setup_rust
+	# The aws-lc-sys build script compiles its jitterentropy copy with -O0,
+	# which its sources reject under a forced optimization level.
+	unset PINO_OPT_LEVEL
 	cargo build --jobs $TERMUX_PKG_MAKE_PROCESSES --target $CARGO_TARGET_NAME --release
 }
 
