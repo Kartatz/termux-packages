@@ -17,6 +17,11 @@ termux_step_pre_configure() {
 	echo -e '\t$(CC) -shared $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) \' >> Makefile
 	echo -e '\t\t-Wl,--whole-archive $(LIBHD) -Wl,--no-whole-archive \' >> Makefile
 	echo -e '\t\t-Wl,-soname=$(LIBHD_SONAME) -o $(LIBHD_SO) $(SO_LIBS)' >> Makefile
+
+	# Generate the ISDN header with the host tool up front: the rule
+	# lives in a subdirectory makefile, so the parent directory fails
+	# to find it when the submake has not finished yet.
+	make -C src/isdn/cdb isdn_cdb.h
 }
 
 termux_step_configure() {
