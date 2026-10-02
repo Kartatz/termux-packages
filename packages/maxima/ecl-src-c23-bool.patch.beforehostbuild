@@ -1,0 +1,26 @@
+--- a/ecl/src/c/dpp.c
++++ b/ecl/src/c/dpp.c
+@@ -109,8 +109,10 @@
+ 
+ #ifndef __cplusplus
+ #if ! ( defined(__bool_true_false_are_defined) \
+         &&__bool_true_false_are_defined )
++#if ! ( defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L )
+ typedef int bool;
+ #endif
++#endif
+ #endif
+ 
+ FILE *in, *out;
+--- a/ecl/src/h/object.h
++++ b/ecl/src/h/object.h
+@@ -23,8 +23,10 @@
+ #define TRUE            1       /*  boolean true value  */
+ #define FALSE           0       /*  boolean false value  */
+ 
+ #if !defined(__cplusplus) && !defined(bool)
++#if ! ( defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L )
+ typedef int bool;
+ #endif
++#endif
+ typedef unsigned char byte;
