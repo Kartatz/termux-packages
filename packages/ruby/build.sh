@@ -58,6 +58,17 @@ termux_step_pre_configure() {
 
 	# Do not remove: fix for Clang's "overoptimization".
 	CFLAGS+=" -fno-strict-aliasing"
+
+	# The mkmf probes declare probed functions as extern void f(), which
+	# conflicts with their real prototypes when the compiler defaults to
+	# C23, where f() means f(void).
+	CFLAGS+=" -std=gnu17"
+
+	# The toolchain defines O_BINARY to 0 for the GNU tools, so guard on
+	# its value rather than its presence: ruby otherwise calls setmode(),
+	# which bionic does not provide.
+	sed -i 's/#ifdef O_BINARY/#if defined(O_BINARY) \&\& O_BINARY != 0/; s/#ifndef O_BINARY/#if !defined(O_BINARY) || O_BINARY == 0/' \
+		io.c box.c file.c process.c ext/-test-/file/newline_conv.c
 }
 
 termux_step_make_install() {
