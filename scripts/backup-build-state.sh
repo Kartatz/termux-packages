@@ -35,13 +35,15 @@ backup() {
 	local expected_asset_count listed_asset_count
 	expected_asset_count="$(gh api --paginate "repos/$REPO/releases" --jq '[.[].assets | length] | add')"
 	listed_asset_count="$(printf '%s\n' "$existing_names" | grep -c .)"
-	if [ "$listed_asset_count" -lt "$expected_asset_count" ]; then
+	if [ "$listed_asset_count" -lt "$expected_asset_count" ] || [ "$expected_asset_count" -eq 0 ]; then
 		echo "ERROR: the release asset listing ($listed_asset_count) is incomplete compared to the expected $expected_asset_count assets, not risking a re-upload of everything" >&2
 		exit 1
 	fi
 
+	touch "$STAGE/uploaded.names"
+
 	asset_exists() {
-		{ printf '%s\n' "$existing_names"; cat "$STAGE/uploaded.names" 2>/dev/null; } | grep -qxF "$1"
+		{ printf '%s\n' "$existing_names"; cat "$STAGE/uploaded.names"; } | grep -qxF "$1"
 	}
 
 	# Create a new release, or reuse the release that already holds the
