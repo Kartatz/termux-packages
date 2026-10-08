@@ -120,33 +120,34 @@ restore() {
 	STAGE="$(mktemp -d "${TMPDIR:-/tmp}/termux-build-restore.XXXXXXXX")"
 	trap 'rm -rf "$STAGE"' EXIT
 
-	local tag releases_json
+	local releases_json releases tag state_tag=""
 	releases_json="$(gh api "repos/$REPO/releases?per_page=100")"
 
-	tag="$(jq -r --arg f "$STATE_FILE" \
-		'sort_by(.created_at) | reverse | map(select(any(.assets[]; .name == $f))) | first | .tag_name // empty' \
-		<<<"$releases_json")"
-	if [ -z "$tag" ]; then
+	# The bulk releases endpoint truncates the per-release asset lists, so
+	# consult each release individually instead of filtering the bulk JSON.
+	mapfile -t releases < <(jq -r 'sort_by(.created_at) | reverse | .[].tag_name' <<<"$releases_json")
+	for tag in "${releases[@]}"; do
+		if gh release download "$tag" -R "$REPO" --pattern "$STATE_FILE" --dir "$STAGE" >/dev/null 2>&1; then
+			state_tag="$tag"
+			break
+		fi
+	done
+	if [ -z "$state_tag" ]; then
 		echo "ERROR: no release containing $STATE_FILE found" >&2
 		exit 1
 	fi
 
-	gh release download "$tag" -R "$REPO" --pattern "$STATE_FILE" --dir "$STAGE"
 	tar -C "$STAGE" -xf "$STAGE/$STATE_FILE"
 
 	docker exec "$CONTAINER" mkdir -p "$BUILDALL_DIR"
 	docker cp "$STAGE/build-all/buildorder.txt" "$CONTAINER:$BUILDALL_DIR/buildorder.txt"
 	docker cp "$STAGE/build-all/buildstatus.txt" "$CONTAINER:$BUILDALL_DIR/buildstatus.txt"
-	echo "Restored build state from $tag into $CONTAINER:$BUILDALL_DIR"
+	echo "Restored build state from $state_tag into $CONTAINER:$BUILDALL_DIR"
 
 	mkdir -p "$REPO_DIR/output"
-	local -a deb_tags
-	mapfile -t deb_tags < <(jq -r \
-		'sort_by(.created_at) | reverse | .[] | select(any(.assets[]; (.name|endswith(".deb")))) | .tag_name' \
-		<<<"$releases_json")
-	for tag in "${deb_tags[@]}"; do
+	for tag in "${releases[@]}"; do
 		gh release download "$tag" -R "$REPO" --pattern '*.deb' \
-			--dir "$REPO_DIR/output" --skip-existing >/dev/null
+			--dir "$REPO_DIR/output" --skip-existing >/dev/null 2>&1
 	done
 	echo "Restored $(ls "$REPO_DIR"/output/*.deb | wc -l) debs to $REPO_DIR/output"
 
