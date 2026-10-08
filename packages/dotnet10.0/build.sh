@@ -124,8 +124,11 @@ termux_step_configure() {
 	# easier to embed in toolchain file than CMakeArgs
 	mkdir -p "${TERMUX_PKG_TMPDIR}/build/cmake"
 	cat <<- EOL > "${TERMUX_PKG_TMPDIR}/build/cmake/android.toolchain.cmake"
-	set(CMAKE_C_FLAGS "\${CMAKE_C_FLAGS} ${CFLAGS}")
-	set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} ${CXXFLAGS}")
+	set(CMAKE_C_FLAGS "\${CMAKE_C_FLAGS} ${CFLAGS} ${CPPFLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS "\${CMAKE_EXE_LINKER_FLAGS} ${LDFLAGS}")
+	set(CMAKE_SHARED_LINKER_FLAGS "\${CMAKE_SHARED_LINKER_FLAGS} ${LDFLAGS}")
+	set(CMAKE_MODULE_LINKER_FLAGS "\${CMAKE_MODULE_LINKER_FLAGS} ${LDFLAGS}")
+	set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} ${CXXFLAGS} ${CPPFLAGS}")
 	set(CMAKE_SYSROOT "${ROOTFS_DIR}")
 	set(CMAKE_C_COMPILER "${TERMUX_STANDALONE_TOOLCHAIN}/bin/${CC}")
 	set(CMAKE_CXX_COMPILER "${TERMUX_STANDALONE_TOOLCHAIN}/bin/${CXX}")
@@ -165,8 +168,8 @@ termux_step_configure() {
 	cat "${TERMUX_PKG_TMPDIR}/build/cmake/android.toolchain.cmake"
 	echo
 
-	export EXTRA_CFLAGS="${CFLAGS}"
-	export EXTRA_CXXFLAGS="${CXXFLAGS}"
+	export EXTRA_CFLAGS="${CFLAGS} ${CPPFLAGS}"
+	export EXTRA_CXXFLAGS="${CXXFLAGS} ${CPPFLAGS}"
 	# Strip -rpath from LDFLAGS; the 0012 CMake patch adds it correctly.
 	# Keeping it here causes duplicate RUNPATH entries.
 	export EXTRA_LDFLAGS="$(echo "${LDFLAGS}" | sed 's/-Wl,-rpath[=,][^ ]*//')"
