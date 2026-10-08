@@ -11,7 +11,7 @@ TERMUX_PKG_BUILD_DEPENDS="libseccomp-static"
 termux_step_post_get_source() {
 	local _f
 	while IFS= read -r -d '' _f; do
-		sed -Ei 's@^const[[:space:]]+(uint32_t|uintptr_t|int|unsigned int)[[:space:]]+(C_[A-Za-z_0-9]+)[[:space:]]+=[[:space:]]+(.+);$@#define \2 \3@' "$_f"
+		sed -Ei 's@^const[[:space:]]+(uint32_t|uintptr_t|int|unsigned int)[[:space:]]+(C_[A-Za-z_0-9]+)[[:space:]]+=[[:space:]]+(.+);([[:space:]]*//.*)?$@#define \2 \3\4@' "$_f"
 		sed -i 's|#define C_ARCH_BAD ARCH_BAD|#define C_ARCH_BAD 0xFFFFFFFFu|' "$_f"
 	done < <(grep -rlZE '^const[[:space:]]+(uint32_t|uintptr_t|int|unsigned int)[[:space:]]+C_' \
 		--include='*.go' libcontainer vendor/github.com/seccomp/libseccomp-golang)
