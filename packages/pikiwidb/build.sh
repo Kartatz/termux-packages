@@ -23,6 +23,20 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 "
 
+termux_step_post_get_source() {
+	# abseil-cpp is built with ABSL_OPTION_USE_STD_ORDERING=1, so its
+	# compare.h aliases std::partial_ordering & co, which require C++20
+	# when using libstdc++. libc++ provides them in C++17 already and
+	# libstdc++ rejects the scoped spelling of memory_order enumerators
+	# in C++20, hence upstream is unaffected.
+	find "$TERMUX_PKG_SRCDIR" -name CMakeLists.txt -print0 |
+		xargs -0 sed -i 's/set *(\(CMAKE_CXX_STANDARD\) 17)/set (\1 20)/'
+	find "$TERMUX_PKG_SRCDIR" -name '*.cc' -o -name '*.h' | xargs \
+		sed -i 's/std::memory_order::memory_order_/std::memory_order_/g'
+	sed -i 's/fmt::format("open file {} fail")/fmt::format("open file {} fail", fileName)/' \
+		"$TERMUX_PKG_SRCDIR/src/acl.cc"
+}
+
 termux_step_pre_configure() {
 	# build and install rediscache component
 	(
