@@ -19,7 +19,11 @@ termux_step_make() {
 	touch licenses/COPYING.LuaFileSystem
 
 	make CC=gcc OBJDIR="$PWD/build" "$PWD"/build/lua
-	make OBJDIR="$PWD/build" LUA_PACKAGE=lua53
+	# Only the curses backend is shipped, while the X11 one pulls in
+	# headers from the termux x11 repository, which we do not build.
+	make OBJDIR="$PWD/build" LUA_PACKAGE=lua53 "$PWD"/build/build.ninja
+	ninja -f "$PWD"/build/build.ninja \
+		bin/wordgrinder-lua53-curses-release bin/wordgrinder.1
 }
 
 termux_step_make_install() {
