@@ -51,6 +51,12 @@ termux_setup_ghc() {
 			make install
 		) &>/dev/null
 
+		# The configure probes accept the Clang-only flags through the
+		# wrappers and bake them into the toolchain configuration, from
+		# where they reach the real GCC inside GHC's response files.
+		sed -Ei 's|--target=[a-z0-9]+-unknown-linux-android ?||g; s|-Qunused-arguments ?||g' \
+			"$TERMUX_GHC_RUNTIME_FOLDER"/lib/"$target"-ghc-"$TERMUX_GHC_VERSION"/lib/settings
+
 		# Provide a common interface for downstream usecase:
 		for b in "$TERMUX_GHC_RUNTIME_FOLDER"/bin/"$target"-*; do
 			ln -sf "$b" "${b/$target-/}"

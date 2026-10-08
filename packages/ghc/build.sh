@@ -125,6 +125,12 @@ termux_step_make_install() {
 		--host="$target"
 
 	HOST_GHC_PKG="$(realpath ../../stage0/bin/ghc-pkg)" make install
+
+	# The configure probes accept the Clang-only flags through the
+	# wrappers and bake them into the toolchain configuration, from
+	# where they reach the real GCC inside GHC's response files.
+	sed -Ei 's|--target=[a-z0-9]+-unknown-linux-android ?||g; s|-Qunused-arguments ?||g' \
+		"$TERMUX_PREFIX/lib/ghc-$TERMUX_PKG_VERSION/lib/settings"
 }
 
 termux_step_post_massage() {
