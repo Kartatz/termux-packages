@@ -117,6 +117,10 @@ termux_step_configure() {
 	# by linking statically
 	export CXXFLAGS+=" --target=${CCTERMUX_HOST_PLATFORM} -stdlib=libc++ -static-libstdc++"
 
+	# The coreclr PAL uses named semaphores, which the toolchain headers
+	# redirect to libandroid-posix-semaphore.
+	export LDFLAGS+=" -Wl,--no-as-needed -landroid-posix-semaphore -Wl,--as-needed"
+
 	# easier to embed in toolchain file than CMakeArgs
 	mkdir -p "${TERMUX_PKG_TMPDIR}/build/cmake"
 	cat <<- EOL > "${TERMUX_PKG_TMPDIR}/build/cmake/android.toolchain.cmake"
