@@ -10,4 +10,5 @@ TERMUX_PKG_DEPENDS="libflac, libid3tag, lua54, openssl, pcre2, resolv-conf"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 -DMATH_LIB=m
 -DMYMPD_STARTUP_SCRIPT=OFF
+-DLUA_INCLUDE_DIR=$TERMUX_PREFIX/include/lua5.4
 "
