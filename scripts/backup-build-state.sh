@@ -41,9 +41,10 @@ backup() {
 	fi
 
 	touch "$STAGE/uploaded.names"
+	printf '%s\n' "$existing_names" >"$STAGE/existing.names"
 
 	asset_exists() {
-		{ printf '%s\n' "$existing_names"; cat "$STAGE/uploaded.names"; } | grep -qxF "$1"
+		grep -qxF "$1" "$STAGE/existing.names" "$STAGE/uploaded.names"
 	}
 
 	# Create a new release, or reuse the release that already holds the
