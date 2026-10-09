@@ -15,6 +15,13 @@ MANDIR=$TERMUX_PREFIX/share/man
 "
 
 termux_step_pre_configure() {
-	CFLAGS+=" $CPPFLAGS"
+	# The GNUmakefile probes for an MD5 implementation with CFLAGS-only
+	# link tests, so the prefix library directory must be visible there
+	# for the -lcrypto probe to succeed.
+	CFLAGS+=" $CPPFLAGS -L$TERMUX_PREFIX/lib"
+
+	# The GNUmakefile links $(LDFLAGS) in front of the objects, so keep
+	# those libraries from being discarded by --as-needed.
+	LDFLAGS="${LDFLAGS/-Wl,--as-needed/}"
 	LDFLAGS+=" -lcrypt -lcrypto -liconv"
 }
