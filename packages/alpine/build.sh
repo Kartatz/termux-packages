@@ -38,6 +38,14 @@ termux_step_pre_configure() {
 
 	touch $TERMUX_PKG_SRCDIR/imap/lnxok
 
+	# The bundled gettext/libtool macros are too old for automake 1.18:
+	# having them (or the system copies aclocal installs over them) under
+	# the "m4" include directory sends aclocal into a "too many loops"
+	# deadlock. Drop the directory from the search path and let
+	# autoreconf regenerate everything from the system copies.
+	sed -i 's/AC_CONFIG_MACRO_DIR(\[m4\])/AC_CONFIG_MACRO_DIR([])/' configure.ac
+	sed -i 's/^ACLOCAL_AMFLAGS = --install -I m4$/ACLOCAL_AMFLAGS =/' Makefile.am
+	rm -f m4/*.m4 aclocal.m4
 	autoreconf -fi
 }
 
