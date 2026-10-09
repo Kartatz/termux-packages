@@ -46,6 +46,15 @@ termux_step_pre_configure() {
 	NOCONFIGURE=1 ./autogen.sh
 }
 
+termux_step_post_configure() {
+	# Do not build the eglib test subdirectory: it compiles a plain
+	# "test.o" object, which makes the toolchain wrapper spoof Clang
+	# for what it thinks is a build system probe, and the Clang-only
+	# bionic fortify headers then explode under GCC. The tests are not
+	# shipped anyway.
+	sed -i 's/^SUBDIRS = \. test$/SUBDIRS = ./' "${TERMUX_PKG_BUILDDIR}/mono/eglib/Makefile"
+}
+
 termux_step_post_make_install() {
 	pushd $TERMUX_PKG_HOSTBUILD_DIR/prefix/lib/mono
 	find . -name '*.so' -exec rm -f \{\} \;
