@@ -16,19 +16,26 @@ TERMUX_PKG_EXCLUDED_ARCHES="arm, i686"
 termux_step_make() {
 	sed -i "s|/usr/lib/picolisp/lib.l|${TERMUX_PREFIX}/lib/picolisp/lib.l|" $TERMUX_PKG_SRCDIR/bin/pil
 	sed -i "s|/usr/lib/picolisp/lib.l|${TERMUX_PREFIX}/lib/picolisp/lib.l|" $TERMUX_PKG_SRCDIR/bin/vip
+
+	# The core is shipped as prebuilt LLVM IR, so use the NDK's clang
+	# purely as an IR-to-object lowering tool; everything else, most
+	# notably all C code and the final links, go through the GCC cross
+	# toolchain.
+	local _ndk_clang="/home/builder/lib/android-ndk-r${TERMUX_NDK_VERSION_NUM}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang-21"
+
 	cd $TERMUX_PKG_SRCDIR/src
-	$CC -O3 -c -emit-llvm base.ll
-	$CC -O3 -w -c -D_OS="\"Android\"" -D_CPU="\"$TERMUX_ARCH\"" `$PKGCONFIG --cflags libffi` -emit-llvm lib.c
+	${_ndk_clang} --target=${CCTERMUX_HOST_PLATFORM} -O3 -c base.ll -o base.o
+	$CC -O3 -w -c -D_OS="\"Android\"" -D_CPU="\"$TERMUX_ARCH\"" `$PKGCONFIG --cflags libffi` lib.c
 	mkdir -p ../bin ../lib
-	$CC $CFLAGS $LDFLAGS base.bc lib.bc -o ../bin/picolisp -rdynamic -lutil -Wl,--no-as-needed,-lm,--as-needed -ldl -lreadline -lffi
+	$CC $CFLAGS $LDFLAGS base.o lib.o -o ../bin/picolisp -rdynamic -lutil -Wl,--no-as-needed,-lm,--as-needed -ldl -lreadline -lffi
 	$STRIP ../bin/picolisp
 
-	$CC -O3 -c -emit-llvm ext.ll
-	$CC $CFLAGS $LDFLAGS ext.bc -o ../lib/ext.so -shared
+	${_ndk_clang} --target=${CCTERMUX_HOST_PLATFORM} -O3 -c ext.ll -o ext.o
+	$CC $CFLAGS $LDFLAGS ext.o -o ../lib/ext.so -shared
 	$STRIP ../lib/ext.so
 
-	$CC -O3 -c -emit-llvm ht.ll
-	$CC $CFLAGS $LDFLAGS ht.bc -o ../lib/ht.so -shared
+	${_ndk_clang} --target=${CCTERMUX_HOST_PLATFORM} -O3 -c ht.ll -o ht.o
+	$CC $CFLAGS $LDFLAGS ht.o -o ../lib/ht.so -shared
 	$STRIP ../lib/ht.so
 
 	$CC -O3 -w $CFLAGS -I$TERMUX_PREFIX/include -L$TERMUX_PREFIX/lib $LDFLAGS -o ../bin/balance balance.c
