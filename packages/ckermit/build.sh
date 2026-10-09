@@ -20,8 +20,15 @@ termux_extract_src_archive() {
 termux_step_pre_configure() {
 	CFLAGS+=" -fPIC -Wno-error=implicit-int"
 	export KFLAGS="-DNOGETUSERSHELL -UNOTIMEH -DTIMEH -DUSE_FILE_R"
-	LDFLAGS+=" -lcrypt"
 	export LNKFLAGS="$LDFLAGS"
+
+	# The makefile puts $(LNKFLAGS) in front of the objects, so anything
+	# linked there is dropped by --as-needed; append it to $(LIBS) instead,
+	# which ends up behind the objects.
+	export LIBS="-lm -lcrypt"
+
+	# The host-built "wart" generator is ancient K&R C.
+	CC_FOR_BUILD+=" -Wno-error=implicit-int"
 }
 
 termux_step_make_install() {
