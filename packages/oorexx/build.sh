@@ -20,6 +20,11 @@ termux_step_pre_configure() {
 	export PATH=$TERMUX_PKG_HOSTBUILD_DIR:$PATH
 
 	CFLAGS+=" -fwrapv -fno-strict-aliasing"
+
+	# The sources use "requires" as an identifier, which is a reserved
+	# keyword from C++20 on.
+	CXXFLAGS+=" -std=gnu++17"
+
 	LDFLAGS+=" -landroid-posix-semaphore"
 	LDFLAGS+=" -landroid-wordexp -lcrypt $($CC -print-libgcc-file-name)"
 
