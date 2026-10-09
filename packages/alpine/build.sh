@@ -22,6 +22,11 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 "
 TERMUX_PKG_BUILD_IN_SRC=true
 
+# The bundled c-client cannot cope with parallel makes: its once-only
+# environment setup creates the "osdep*" sources that are compiled in
+# the same run, so racing jobs see "osdepbas.c not found".
+TERMUX_PKG_MAKE_PROCESSES=1
+
 termux_step_pre_configure() {
 	export TCC=$CC
 	export TRANLIB=$RANLIB
